@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "byti",
-    "slug": "byti",
-    "description": "BYTI - Before you trash it",
+    "name": "GT",
+    "slug": "GT",
+    "description": "GT - Give'n'Take",
     "primaryColor": "#CB0C9F",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash.jpg",
       "resizeMode": "cover",
       "backgroundColor": "#CB0C9F"
     },
@@ -25,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#CB0C9F"
-      }
+      },
+      "package": "com.artie.byti"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3a8291e0-97c7-4463-82d0-19a8ad086971"
+      }
     }
   }
 }

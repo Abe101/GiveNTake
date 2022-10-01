@@ -49,8 +49,8 @@
     }
   },
   "app": {
-    "name": "Byti",
-    "fullname": "Before you trash it",
+    "name": "GT",
+    "fullname": "Give'n'Take",
     "link": "creative-tim.com"
   },
   "darkMode": "Dark Mode",
@@ -65,7 +65,7 @@
     "extra": "Extra - Automotive"
   },
   "navigation": {
-    "home": "Byti",
+    "home": "Give N Take",
     "components": "Components",
     "articles": "Articles",
     "rentals": "Rentals",
@@ -88,7 +88,7 @@
     "documentation": "Documentation"
   },
   "home": {
-    "title": "Soft UI",
+    "title": "GT",
     "following": "Following",
     "trending": "Trending"
   },
