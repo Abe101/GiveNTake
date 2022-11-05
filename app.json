@@ -1,14 +1,15 @@
 {
   "expo": {
     "name": "GT",
-    "slug": "GT",
+    "slug": "giventake",
+    "owner": "artie",
     "description": "GT - Give'n'Take",
     "primaryColor": "#CB0C9F",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.jpg",
+      "image": "./assets/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#CB0C9F"
     },
@@ -26,14 +27,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#CB0C9F"
       },
-      "package": "com.artie.byti"
+      "package": "com.artie.gt"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "3a8291e0-97c7-4463-82d0-19a8ad086971"
+        "projectId": "d8e37cd1-8dc0-4cf2-b3c5-c10ae238c503"
       }
     }
   }
