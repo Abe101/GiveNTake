@@ -64,7 +64,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "register": "Create account",
-    "extra": "Extra - Automotive"
+    "extra": "Extra - Automotive",
+    "signin": "Sign In"
   },
   "navigation": {
     "home": "Give N Take",
@@ -97,6 +98,10 @@
   "register": {
     "title": "Welcome",
     "subtitle": "Register"
+  },
+  "signin": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in"
   },
   "profile": {
     "title": "Profile",

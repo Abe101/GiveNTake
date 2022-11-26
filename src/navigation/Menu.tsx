@@ -68,7 +68,7 @@ const DrawerContent = (
   const {navigation} = props;
   const {t} = useTranslation();
   // const {isDark, handleIsDark} = useData();
-  const [active, setActive] = useState('Regsiter');
+  const [active, setActive] = useState('');
   const {assets, colors, gradients, sizes} = useTheme();
   const labelColor = colors.text;
 
@@ -90,7 +90,7 @@ const DrawerContent = (
     // {name: t('screens.rental'), to: 'Pro', icon: assets.rental},
     {name: t('screens.profile'), to: 'Profile', icon: assets.profile},
     // {name: t('screens.settings'), to: 'Pro', icon: assets.settings},
-    {name: t('screens.register'), to: 'Register', icon: assets.register},
+    // {name: t('screens.register'), to: 'Register', icon: assets.register},
     // {name: t('screens.extra'), to: 'Pro', icon: assets.extras},
   ];
 

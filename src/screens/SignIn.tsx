@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Linking, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
 
@@ -9,34 +9,30 @@ import {
   useTranslation,
 } from '../hooks/';
 import * as regex from '../constants/regex';
-import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
+import {Block, Button, Input, Image, Text} from '../components/';
 
 const isAndroid = Platform.OS === 'android';
 
-interface IRegistration {
+interface ISignIn {
   phoneNumber: string;
   password: string;
-  agreed: boolean;
 }
-interface IRegistrationValidation {
+interface ISignInValidation {
   phoneNumber: boolean;
   password: boolean;
-  agreed: boolean;
 }
 
-const Register = () => {
+const SignIn = () => {
   // const {isDark} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const [isValid, setIsValid] = useState<IRegistrationValidation>({
+  const [isValid, setIsValid] = useState<ISignInValidation>({
     phoneNumber: false,
     password: false,
-    agreed: false,
   });
-  const [registration, setRegistration] = useState<IRegistration>({
+  const [registration, setRegistration] = useState<ISignIn>({
     phoneNumber: '',
     password: '',
-    agreed: false,
   });
   const {assets, colors, gradients, sizes} = useTheme();
 
@@ -47,19 +43,18 @@ const Register = () => {
     [setRegistration],
   );
 
-  const handleSignUp = useCallback(() => {
-    if (!Object.values(isValid).includes(false)) {
-      /** send/save registratin data */
-      console.log('handleSignUp', registration);
-    }
-  }, [isValid, registration]);
+  //   const handleSignUp = useCallback(() => {
+  //     if (!Object.values(isValid).includes(false)) {
+  //       /** send/save registratin data */
+  //       console.log('handleSignUp', registration);
+  //     }
+  //   }, [isValid, registration]);
 
   useEffect(() => {
     setIsValid((state) => ({
       ...state,
       phoneNumber: regex.phoneNumber.test(registration.phoneNumber),
       password: regex.password.test(registration.password),
-      agreed: registration.agreed,
     }));
   }, [registration, setIsValid]);
 
@@ -75,11 +70,11 @@ const Register = () => {
             source={assets.background}
             height={sizes.height * 0.3}>
             <Text h4 center white marginBottom={sizes.md}>
-              {t('register.title')}
+              {t('signin.title')}
             </Text>
           </Image>
         </Block>
-        {/* register form */}
+        {/* signin form */}
         <Block
           keyboard
           behavior={!isAndroid ? 'padding' : 'height'}
@@ -100,7 +95,7 @@ const Register = () => {
               tint={colors.blurTint}
               paddingVertical={sizes.sm}>
               <Text p semibold center>
-                {t('register.subtitle')}
+                {t('signin.subtitle')}
               </Text>
               <Block paddingHorizontal={sizes.sm}>
                 <Input
@@ -129,32 +124,14 @@ const Register = () => {
                   danger={Boolean(registration.password && !isValid.password)}
                 />
               </Block>
-              {/* checkbox terms */}
-              <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
-                <Checkbox
-                  marginRight={sizes.sm}
-                  checked={registration?.agreed}
-                  onPress={(value) => handleChange({agreed: value})}
-                />
-                <Text paddingRight={sizes.s}>
-                  {t('common.agree')}
-                  <Text
-                    semibold
-                    onPress={() => {
-                      Linking.openURL('#');
-                    }}>
-                    {t('common.terms')}
-                  </Text>
-                </Text>
-              </Block>
               <Button
-                onPress={handleSignUp}
+                onPress={() => navigation.replace('Home')} // handle signin
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
                 disabled={Object.values(isValid).includes(false)}>
                 <Text bold white transform="uppercase">
-                  {t('common.signup')}
+                  {t('common.signin')}
                 </Text>
               </Button>
               <Button
@@ -163,9 +140,9 @@ const Register = () => {
                 shadow={!isAndroid}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
-                onPress={() => navigation.replace('SignIn')}>
+                onPress={() => navigation.replace('Register')}>
                 <Text bold primary transform="uppercase">
-                  {t('common.signin')}
+                  {t('common.signup')}
                 </Text>
               </Button>
             </Block>
@@ -176,4 +153,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignIn;
