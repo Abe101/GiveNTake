@@ -14,14 +14,12 @@ import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
 const isAndroid = Platform.OS === 'android';
 
 interface IRegistration {
-  name: string;
-  email: string;
+  phoneNumber: string;
   password: string;
   agreed: boolean;
 }
 interface IRegistrationValidation {
-  name: boolean;
-  email: boolean;
+  phoneNumber: boolean;
   password: boolean;
   agreed: boolean;
 }
@@ -31,14 +29,12 @@ const Register = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [isValid, setIsValid] = useState<IRegistrationValidation>({
-    name: false,
-    email: false,
+    phoneNumber: false,
     password: false,
     agreed: false,
   });
   const [registration, setRegistration] = useState<IRegistration>({
-    name: '',
-    email: '',
+    phoneNumber: '',
     password: '',
     agreed: false,
   });
@@ -61,8 +57,7 @@ const Register = () => {
   useEffect(() => {
     setIsValid((state) => ({
       ...state,
-      name: regex.name.test(registration.name),
-      email: regex.email.test(registration.email),
+      phoneNumber: regex.phoneNumber.test(registration.phoneNumber),
       password: regex.password.test(registration.password),
       agreed: registration.agreed,
     }));
@@ -125,80 +120,21 @@ const Register = () => {
               <Text p semibold center>
                 {t('register.subtitle')}
               </Text>
-              {/* social buttons */}
-              {/* <Block row center justify="space-evenly" marginVertical={sizes.m}>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.facebook}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.apple}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.google}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-              </Block>
-              <Block
-                row
-                flex={0}
-                align="center"
-                justify="center"
-                marginBottom={sizes.sm}
-                paddingHorizontal={sizes.xxl}>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[1, 0]}
-                  start={[0, 1]}
-                  gradient={gradients.divider}
-                />
-                <Text center marginHorizontal={sizes.s}>
-                  {t('common.or')}
-                </Text>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[0, 1]}
-                  start={[1, 0]}
-                  gradient={gradients.divider}
-                />
-              </Block> */}
-              {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
                   autoCapitalize="none"
+                  marginTop={sizes.l}
                   marginBottom={sizes.m}
-                  label={t('common.name')}
-                  placeholder={t('common.namePlaceholder')}
-                  success={Boolean(registration.name && isValid.name)}
-                  danger={Boolean(registration.name && !isValid.name)}
-                  onChangeText={(value) => handleChange({name: value})}
-                />
-                <Input
-                  autoCapitalize="none"
-                  marginBottom={sizes.m}
-                  label={t('common.email')}
-                  keyboardType="email-address"
-                  placeholder={t('common.emailPlaceholder')}
-                  success={Boolean(registration.email && isValid.email)}
-                  danger={Boolean(registration.email && !isValid.email)}
-                  onChangeText={(value) => handleChange({email: value})}
+                  label={t('common.phoneNumber')}
+                  keyboardType="number-pad"
+                  placeholder={t('common.phoneNumberPlaceholder')}
+                  success={Boolean(
+                    registration.phoneNumber && isValid.phoneNumber,
+                  )}
+                  danger={Boolean(
+                    registration.phoneNumber && !isValid.phoneNumber,
+                  )}
+                  onChangeText={(value) => handleChange({phoneNumber: value})}
                 />
                 <Input
                   secureTextEntry

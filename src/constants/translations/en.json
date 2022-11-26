@@ -29,6 +29,8 @@
     "namePlaceholder": "Enter your full name",
     "email": "Email",
     "emailPlaceholder": "Enter your email address",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
     "password": "Password",
     "passwordPlaceholder": "Enter a password",
     "agree": "I agree with the ",
@@ -94,7 +96,7 @@
   },
   "register": {
     "title": "Welcome",
-    "subtitle": "Register with"
+    "subtitle": "Register"
   },
   "profile": {
     "title": "Profile",
