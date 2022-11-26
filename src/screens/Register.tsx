@@ -1,8 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Linking, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-import {useData, useTheme, useTranslation} from '../hooks/';
+import {
+  // useData,
+  useTheme,
+  useTranslation,
+} from '../hooks/';
 import * as regex from '../constants/regex';
 import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
 
@@ -22,9 +27,9 @@ interface IRegistrationValidation {
 }
 
 const Register = () => {
-  const {isDark} = useData();
+  // const {isDark} = useData();
   const {t} = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const [isValid, setIsValid] = useState<IRegistrationValidation>({
     name: false,
     email: false,
@@ -74,7 +79,7 @@ const Register = () => {
             radius={sizes.cardRadius}
             source={assets.background}
             height={sizes.height * 0.3}>
-            <Button
+            {/* <Button
               row
               flex={0}
               justify="flex-start"
@@ -90,7 +95,7 @@ const Register = () => {
               <Text p white marginLeft={sizes.s}>
                 {t('common.goBack')}
               </Text>
-            </Button>
+            </Button> */}
 
             <Text h4 center white marginBottom={sizes.md}>
               {t('register.title')}
@@ -121,7 +126,7 @@ const Register = () => {
                 {t('register.subtitle')}
               </Text>
               {/* social buttons */}
-              <Block row center justify="space-evenly" marginVertical={sizes.m}>
+              {/* <Block row center justify="space-evenly" marginVertical={sizes.m}>
                 <Button outlined gray shadow={!isAndroid}>
                   <Image
                     source={assets.facebook}
@@ -173,7 +178,7 @@ const Register = () => {
                   start={[1, 0]}
                   gradient={gradients.divider}
                 />
-              </Block>
+              </Block> */}
               {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
@@ -240,8 +245,7 @@ const Register = () => {
                 shadow={!isAndroid}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
-                // onPress={() => navigation.navigate('Pro')}
-              >
+                onPress={() => navigation.replace('Home')}>
                 <Text bold primary transform="uppercase">
                   {t('common.signin')}
                 </Text>
