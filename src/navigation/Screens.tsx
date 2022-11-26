@@ -20,7 +20,7 @@ export default () => {
 
   return (
     <Stack.Navigator
-      initialRouteName="Register"
+      initialRouteName="SignIn"
       screenOptions={screenOptions.stack}>
       <Stack.Screen
         name="Home"
