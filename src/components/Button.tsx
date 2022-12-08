@@ -159,7 +159,7 @@ const Button = ({
         height: sizes.socialSize,
         borderRadius: sizes.socialRadius,
       }),
-      ...(disabled && {opacity: 0.5}),
+      // ...(disabled && {opacity: 0.5}),
       ...(position && {position}),
       ...(right !== undefined && {right}),
       ...(left !== undefined && {left}),

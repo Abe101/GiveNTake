@@ -106,7 +106,7 @@ const Register = () => {
                 <Input
                   autoCapitalize="none"
                   marginTop={sizes.l}
-                  marginBottom={sizes.m}
+                  marginBottom={sizes.s}
                   label={t('common.phoneNumber')}
                   keyboardType="number-pad"
                   placeholder={t('common.phoneNumberPlaceholder')}
@@ -118,6 +118,12 @@ const Register = () => {
                   )}
                   onChangeText={(value) => handleChange({phoneNumber: value})}
                 />
+                <Text danger transform="capitalize">
+                  {registration.phoneNumber && !isValid.phoneNumber
+                    ? 'invalid phone number'
+                    : ''}
+                </Text>
+
                 <Input
                   secureTextEntry
                   autoCapitalize="none"
@@ -128,6 +134,11 @@ const Register = () => {
                   success={Boolean(registration.password && isValid.password)}
                   danger={Boolean(registration.password && !isValid.password)}
                 />
+                <Text danger transform="capitalize">
+                  {registration.password && !isValid.password
+                    ? 'password should contain at least: 1 uppercase, 1 lowercase, 1 digit and 6 characters long'
+                    : ''}
+                </Text>
               </Block>
               {/* checkbox terms */}
               <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>

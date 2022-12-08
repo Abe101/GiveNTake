@@ -101,7 +101,7 @@ const SignIn = () => {
                 <Input
                   autoCapitalize="none"
                   marginTop={sizes.l}
-                  marginBottom={sizes.m}
+                  marginBottom={sizes.s}
                   label={t('common.phoneNumber')}
                   keyboardType="number-pad"
                   placeholder={t('common.phoneNumberPlaceholder')}
@@ -113,6 +113,12 @@ const SignIn = () => {
                   )}
                   onChangeText={(value) => handleChange({phoneNumber: value})}
                 />
+                <Text danger transform="capitalize">
+                  {registration.phoneNumber && !isValid.phoneNumber
+                    ? 'invalid phone number'
+                    : ''}
+                </Text>
+
                 <Input
                   secureTextEntry
                   autoCapitalize="none"
