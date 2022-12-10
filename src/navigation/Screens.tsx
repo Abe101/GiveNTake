@@ -9,6 +9,7 @@ import {
   Register,
   Pro,
   SignIn,
+  ProfileSettings,
 } from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
 
@@ -45,6 +46,11 @@ export default () => {
       <Stack.Screen
         name="Profile"
         component={Profile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ProfileSettings"
+        component={ProfileSettings}
         options={{headerShown: false}}
       />
 

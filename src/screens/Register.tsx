@@ -120,7 +120,7 @@ const Register = () => {
                 />
                 <Text danger transform="capitalize">
                   {registration.phoneNumber && !isValid.phoneNumber
-                    ? 'invalid phone number'
+                    ? t('common.invalidPhoneNumber')
                     : ''}
                 </Text>
 
@@ -136,7 +136,7 @@ const Register = () => {
                 />
                 <Text danger transform="capitalize">
                   {registration.password && !isValid.password
-                    ? 'password should contain at least: 1 uppercase, 1 lowercase, 1 digit and 6 characters long'
+                    ? t('common.invalidPassword')
                     : ''}
                 </Text>
               </Block>

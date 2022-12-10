@@ -33,6 +33,11 @@
     "phoneNumberPlaceholder": "Enter your phone number",
     "password": "Password",
     "passwordPlaceholder": "Enter a password",
+    "invalidPassword": "password should contain at least: 1 uppercase, 1 lowercase, 1 digit and 6 characters long",
+    "invalidPhoneNumber": "invalid phone number",
+    "invalidEmailAddress": "",
+    "continue": "Continue",
+    "save": "Save",
     "agree": "I agree with the ",
     "terms": "Terms and Conditions",
     "signup": "Sign Up",
@@ -109,6 +114,15 @@
     "followers": "Followers",
     "following": "Following",
     "aboutMe": "About me"
+  },
+  "profileSettings": {
+    "title": "Profile settings",
+    "changePhoneNumber": "Change phone number",
+    "updateEmail": "Update email",
+    "changePassword": "Change password",
+    "oldPassword": "Old password",
+    "newPassword": "New password",
+    "oldPasswordRequired": "You need to enter old password in order to change it"
   },
   "pro": {
     "title": "Soft UI PRO",
