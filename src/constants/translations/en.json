@@ -61,6 +61,7 @@
     "link": "creative-tim.com"
   },
   "darkMode": "Dark Mode",
+  "logout": "Log Out",
   "screens": {
     "home": "Home",
     "components": "Components",
@@ -70,7 +71,8 @@
     "settings": "Settings",
     "register": "Create account",
     "extra": "Extra - Automotive",
-    "signin": "Sign In"
+    "signin": "Sign In",
+    "publish": "Publish"
   },
   "navigation": {
     "home": "Give N Take",
@@ -123,6 +125,9 @@
     "oldPassword": "Old password",
     "newPassword": "New password",
     "oldPasswordRequired": "You need to enter old password in order to change it"
+  },
+  "publish": {
+    "formTitle": "Post a new request"
   },
   "pro": {
     "title": "Soft UI PRO",

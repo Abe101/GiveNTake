@@ -242,6 +242,8 @@ export interface ThemeIcons {
   train: ImageSourcePropType;
   users: ImageSourcePropType;
   warning: ImageSourcePropType;
+  pluscircle: ImageSourcePropType;
+  exit: ImageSourcePropType;
 }
 
 export interface ThemeAssets {

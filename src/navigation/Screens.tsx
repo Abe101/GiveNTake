@@ -10,6 +10,7 @@ import {
   Pro,
   SignIn,
   ProfileSettings,
+  Publish,
 } from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
 
@@ -21,7 +22,7 @@ export default () => {
 
   return (
     <Stack.Navigator
-      initialRouteName="SignIn"
+      initialRouteName="Home" // TODO: Change back to SignIn
       screenOptions={screenOptions.stack}>
       <Stack.Screen
         name="Home"
@@ -63,6 +64,12 @@ export default () => {
       <Stack.Screen
         name="SignIn"
         component={SignIn}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="Publish"
+        component={Publish}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

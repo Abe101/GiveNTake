@@ -85,13 +85,14 @@ const DrawerContent = (
   // screen list for Drawer menu
   const screens = [
     {name: t('screens.home'), to: 'Home', icon: assets.home},
-    // {name: t('screens.components'), to: 'Components', icon: assets.components},
+    {name: t('screens.components'), to: 'Components', icon: assets.components},
     {name: t('screens.articles'), to: 'Articles', icon: assets.document},
     // {name: t('screens.rental'), to: 'Pro', icon: assets.rental},
     {name: t('screens.profile'), to: 'Profile', icon: assets.profile},
     // {name: t('screens.settings'), to: 'Pro', icon: assets.settings},
     // {name: t('screens.register'), to: 'Register', icon: assets.register},
     // {name: t('screens.extra'), to: 'Pro', icon: assets.extras},
+    {name: t('screens.publish'), to: 'Publish', icon: assets.pluscircle},
   ];
 
   return (
@@ -196,16 +197,32 @@ const DrawerContent = (
           </Text>
         </Button> */}
 
-        {/* <Block row justify="space-between" marginTop={sizes.sm}>
-          <Text color={labelColor}>{t('darkMode')}</Text>
-          <Switch
-            checked={isDark}
-            onPress={(checked) => {
-              handleIsDark(checked);
-              Alert.alert(t('pro.title'), t('pro.alert'));
-            }}
-          />
-        </Block> */}
+        <Block row justify="space-between" marginTop={sizes.l}>
+          <Button
+            row
+            justify="flex-start"
+            onPress={() => handleNavigation('SigIn')}>
+            <Block
+              flex={0}
+              radius={6}
+              align="center"
+              justify="center"
+              width={sizes.md}
+              height={sizes.md}
+              marginRight={sizes.s}>
+              <Image
+                radius={0}
+                width={14}
+                height={14}
+                source={assets.exit}
+                color={colors.danger}
+              />
+            </Block>
+            <Text p color={labelColor}>
+              {t('logout')}
+            </Text>
+          </Button>
+        </Block>
       </Block>
     </DrawerContentScrollView>
   );
