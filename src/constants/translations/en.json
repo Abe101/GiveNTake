@@ -91,7 +91,8 @@
     "register": "Register",
     "login": "Login",
     "extra": "Automotive",
-    "shopping": "Shopping Cart"
+    "shopping": "Shopping Cart",
+    "publish": "Publish"
   },
   "menu": {
     "started": "Getting Started",
@@ -127,7 +128,15 @@
     "oldPasswordRequired": "You need to enter old password in order to change it"
   },
   "publish": {
-    "formTitle": "Post a new request"
+    "formTitle": "Post a new request",
+    "productName": "Product Name",
+    "productBrand": "Product Company/Brand",
+    "productQuantity": "Product Quantity",
+    "description": "Product Description",
+    "chooseCategory": "Choose Category",
+    "addTags": "Add Tags (Optional)",
+    "addPhoto": "Add Photo (Optional)",
+    "submitForm": "Post"
   },
   "pro": {
     "title": "Soft UI PRO",

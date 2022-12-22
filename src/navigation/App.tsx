@@ -3,6 +3,7 @@ import {Platform, StatusBar} from 'react-native';
 import {useFonts} from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import {Provider as PaperProvider} from 'react-native-paper';
 
 import Menu from './Menu';
 import {useData, ThemeProvider, TranslationProvider} from '../hooks';
@@ -49,9 +50,11 @@ export default () => {
   return (
     <TranslationProvider>
       <ThemeProvider theme={theme} setTheme={setTheme}>
-        <NavigationContainer theme={navigationTheme}>
-          <Menu />
-        </NavigationContainer>
+        <PaperProvider>
+          <NavigationContainer theme={navigationTheme}>
+            <Menu />
+          </NavigationContainer>
+        </PaperProvider>
       </ThemeProvider>
     </TranslationProvider>
   );

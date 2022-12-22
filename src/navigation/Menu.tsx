@@ -201,7 +201,7 @@ const DrawerContent = (
           <Button
             row
             justify="flex-start"
-            onPress={() => handleNavigation('SigIn')}>
+            onPress={() => handleNavigation('SignIn')}>
             <Block
               flex={0}
               radius={6}

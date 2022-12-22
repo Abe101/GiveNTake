@@ -14,34 +14,35 @@ import Text from './Text';
 import useTheme from '../hooks/useTheme';
 import {IInputProps} from '../constants/types';
 
-const Input = ({
-  id = 'Input',
-  style,
-  color,
-  primary,
-  secondary,
-  tertiary,
-  black,
-  white,
-  gray,
-  danger,
-  warning,
-  success,
-  info,
-  search,
-  disabled,
-  label,
-  icon,
-  marginBottom,
-  marginTop,
-  marginHorizontal,
-  marginVertical,
-  marginRight,
-  marginLeft,
-  onFocus,
-  onBlur,
-  ...props
-}: IInputProps) => {
+const Input = React.forwardRef<TextInput, IInputProps>((inputProps, ref) => {
+  const {
+    id = 'Input',
+    style,
+    color,
+    primary,
+    secondary,
+    tertiary,
+    black,
+    white,
+    gray,
+    danger,
+    warning,
+    success,
+    info,
+    search,
+    disabled,
+    label,
+    icon,
+    marginBottom,
+    marginTop,
+    marginHorizontal,
+    marginVertical,
+    marginRight,
+    marginLeft,
+    onFocus,
+    onBlur,
+    ...props
+  } = inputProps;
   const {assets, colors, sizes} = useTheme();
   const [isFocused, setFocused] = useState(false);
 
@@ -141,6 +142,7 @@ const Input = ({
         <TextInput
           {...inputID}
           {...props}
+          ref={ref}
           style={inputStyles}
           editable={!disabled}
           placeholderTextColor={inputColor}
@@ -170,6 +172,6 @@ const Input = ({
       </Block>
     </Block>
   );
-};
+});
 
 export default React.memo(Input);
