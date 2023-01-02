@@ -1,43 +1,47 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Linking, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useToast} from 'react-native-toast-notifications';
 
-import {
-  // useData,
-  useTheme,
-  useTranslation,
-} from '../hooks/';
+import {useTheme, useTranslation} from '../hooks/';
 import * as regex from '../constants/regex';
-import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
+import {Block, Button, Input, Image, Text} from '../components/';
+
+import BaseQuery from '../services/BaseQuery';
 
 const isAndroid = Platform.OS === 'android';
 
-interface IRegistration {
-  phoneNumber: string;
+export interface IRegistration {
+  name: string;
+  email: string;
   password: string;
-  agreed: boolean;
+  confirmPassword: string;
 }
 interface IRegistrationValidation {
-  phoneNumber: boolean;
+  name: boolean;
+  email: boolean;
   password: boolean;
-  agreed: boolean;
+  confirmPassword: boolean;
 }
 
 const Register = () => {
-  // const {isDark} = useData();
   const {t} = useTranslation();
+  const toaster = useToast();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [isValid, setIsValid] = useState<IRegistrationValidation>({
-    phoneNumber: false,
+    name: false,
+    email: false,
     password: false,
-    agreed: false,
+    confirmPassword: false,
   });
   const [registration, setRegistration] = useState<IRegistration>({
-    phoneNumber: '',
+    name: '',
+    email: '',
     password: '',
-    agreed: false,
+    confirmPassword: '',
   });
+  const [isLoading, setLoading] = useState<boolean>(false);
   const {assets, colors, gradients, sizes} = useTheme();
 
   const handleChange = useCallback(
@@ -47,19 +51,34 @@ const Register = () => {
     [setRegistration],
   );
 
-  const handleSignUp = useCallback(() => {
+  const handleSignUp = useCallback(async () => {
     if (!Object.values(isValid).includes(false)) {
-      /** send/save registratin data */
-      console.log('handleSignUp', registration);
+      setLoading(true);
+      const [isSuccess] = await BaseQuery.registerUser(registration);
+
+      if (isSuccess) {
+        setLoading(false);
+        toaster.show('Registration Successful!', {
+          type: 'success',
+          placement: 'top',
+          duration: 2000,
+          animationType: 'slide-in',
+        });
+        setTimeout(() => {
+          navigation.replace('Home');
+        }, 2000);
+      }
+      setLoading(false);
     }
-  }, [isValid, registration]);
+  }, [isValid, navigation, registration, toaster]);
 
   useEffect(() => {
     setIsValid((state) => ({
       ...state,
-      phoneNumber: regex.phoneNumber.test(registration.phoneNumber),
+      name: regex.name.test(registration.name),
+      email: regex.email.test(registration.email),
       password: regex.password.test(registration.password),
-      agreed: registration.agreed,
+      confirmPassword: registration.password === registration.confirmPassword,
     }));
   }, [registration, setIsValid]);
 
@@ -73,6 +92,7 @@ const Register = () => {
             padding={sizes.sm}
             radius={sizes.cardRadius}
             source={assets.background}
+            /* @ts-ignore */
             height={sizes.height * 0.3}>
             <Text h4 center white marginBottom={sizes.md}>
               {t('register.title')}
@@ -104,30 +124,46 @@ const Register = () => {
               </Text>
               <Block paddingHorizontal={sizes.sm}>
                 <Input
+                  autoCorrect={false}
                   autoCapitalize="none"
                   marginTop={sizes.l}
-                  marginBottom={sizes.s}
-                  label={t('common.phoneNumber')}
-                  keyboardType="number-pad"
-                  placeholder={t('common.phoneNumberPlaceholder')}
-                  success={Boolean(
-                    registration.phoneNumber && isValid.phoneNumber,
-                  )}
-                  danger={Boolean(
-                    registration.phoneNumber && !isValid.phoneNumber,
-                  )}
-                  onChangeText={(value) => handleChange({phoneNumber: value})}
+                  label={t('common.name')}
+                  keyboardType="default"
+                  placeholder={t('common.namePlaceholder')}
+                  success={Boolean(registration.name && isValid.name)}
+                  danger={Boolean(registration.name && !isValid.name)}
+                  onChangeText={(value) => handleChange({name: value.trim()})}
                 />
                 <Text danger transform="capitalize">
-                  {registration.phoneNumber && !isValid.phoneNumber
-                    ? t('common.invalidPhoneNumber')
+                  {registration.name && !isValid.name
+                    ? t('common.invalidName')
+                    : ''}
+                </Text>
+
+                <Input
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  marginTop={sizes.s}
+                  marginBottom={sizes.s}
+                  label={t('common.email')}
+                  keyboardType="default"
+                  placeholder={t('common.emailPlaceholder')}
+                  success={Boolean(registration.email && isValid.email)}
+                  danger={Boolean(registration.email && !isValid.email)}
+                  onChangeText={(value) => handleChange({email: value.trim()})}
+                />
+                <Text danger transform="capitalize">
+                  {registration.email && !isValid.email
+                    ? t('common.invalidEmailAddress')
                     : ''}
                 </Text>
 
                 <Input
                   secureTextEntry
+                  autoCorrect={false}
                   autoCapitalize="none"
-                  marginBottom={sizes.m}
+                  marginTop={sizes.s}
+                  marginBottom={sizes.s}
                   label={t('common.password')}
                   placeholder={t('common.passwordPlaceholder')}
                   onChangeText={(value) => handleChange({password: value})}
@@ -139,31 +175,38 @@ const Register = () => {
                     ? t('common.invalidPassword')
                     : ''}
                 </Text>
-              </Block>
-              {/* checkbox terms */}
-              <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
-                <Checkbox
-                  marginRight={sizes.sm}
-                  checked={registration?.agreed}
-                  onPress={(value) => handleChange({agreed: value})}
+
+                <Input
+                  secureTextEntry
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  marginTop={sizes.s}
+                  marginBottom={sizes.s}
+                  label={t('common.confirmPassword')}
+                  placeholder={t('common.confirmPasswordPlaceholder')}
+                  onChangeText={(value) =>
+                    handleChange({confirmPassword: value})
+                  }
+                  success={Boolean(
+                    registration.confirmPassword && isValid.confirmPassword,
+                  )}
+                  danger={Boolean(
+                    registration.confirmPassword && !isValid.confirmPassword,
+                  )}
                 />
-                <Text paddingRight={sizes.s}>
-                  {t('common.agree')}
-                  <Text
-                    semibold
-                    onPress={() => {
-                      Linking.openURL('#');
-                    }}>
-                    {t('common.terms')}
-                  </Text>
+                <Text danger transform="capitalize">
+                  {registration.confirmPassword && !isValid.confirmPassword
+                    ? t('common.invalidConfirmPassword')
+                    : ''}
                 </Text>
               </Block>
+
               <Button
                 onPress={handleSignUp}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={Object.values(isValid).includes(false)}>
+                disabled={isLoading || Object.values(isValid).includes(false)}>
                 <Text bold white transform="uppercase">
                   {t('common.signup')}
                 </Text>
@@ -174,6 +217,7 @@ const Register = () => {
                 shadow={!isAndroid}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
+                disabled={isLoading}
                 onPress={() => navigation.replace('SignIn')}>
                 <Text bold primary transform="uppercase">
                   {t('common.signin')}

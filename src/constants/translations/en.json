@@ -32,10 +32,14 @@
     "phoneNumber": "Phone Number",
     "phoneNumberPlaceholder": "Enter your phone number",
     "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re Enter your password",
     "passwordPlaceholder": "Enter a password",
     "invalidPassword": "password should contain at least: 1 uppercase, 1 lowercase, 1 digit and 6 characters long",
     "invalidPhoneNumber": "invalid phone number",
-    "invalidEmailAddress": "",
+    "invalidEmailAddress": "invalid email address",
+    "invalidName": "invalid name",
+    "invalidConfirmPassword": "Passwords do not match",
     "continue": "Continue",
     "save": "Save",
     "agree": "I agree with the ",
@@ -49,6 +53,7 @@
     "checkout": "Proceed to checkout",
     "readArticle": "Read Article",
     "send": "Send",
+    "required": "Required!",
     "guests": {
       "one": "1 guest",
       "other": "{{count}} guests",
@@ -75,7 +80,7 @@
     "publish": "Publish"
   },
   "navigation": {
-    "home": "Give N Take",
+    "home": "Home",
     "components": "Components",
     "articles": "Articles",
     "rentals": "Rentals",

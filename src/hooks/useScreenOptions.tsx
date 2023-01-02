@@ -16,6 +16,7 @@ import Text from '../components/Text';
 import useTheme from '../hooks/useTheme';
 import Button from '../components/Button';
 import Block from '../components/Block';
+import {LinearGradient} from 'expo-linear-gradient';
 
 export default () => {
   const {t} = useTranslation();
@@ -29,9 +30,21 @@ export default () => {
     headerTitleContainerStyle: {marginLeft: -sizes.sm},
     headerLeftContainerStyle: {paddingLeft: sizes.s},
     headerRightContainerStyle: {paddingRight: sizes.s},
+    headerBackground: () => (
+      <LinearGradient
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{flex: 1}}
+        /* @ts-ignore */
+        colors={gradients.primary}
+        end={[1, 5]}
+        start={[0, 0]}
+      />
+    ),
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     headerTitle: ({children}: StackHeaderTitleProps) => (
-      <Text p>{children}</Text>
+      <Text p color={colors.white}>
+        {children}
+      </Text>
     ),
     headerLeft: () => (
       <Button onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
@@ -79,7 +92,7 @@ export default () => {
             radius={sizes.sm / 2}
             gradient={gradients?.primary}>
             <Text white center bold size={10} lineHeight={10} paddingTop={3}>
-              3
+              1
             </Text>
           </Block>
         </TouchableOpacity>

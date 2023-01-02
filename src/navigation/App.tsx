@@ -4,6 +4,10 @@ import {useFonts} from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
+import {ToastProvider} from 'react-native-toast-notifications';
+import {Provider as ReduxProvider} from 'react-redux';
+
+import {store} from '../redux';
 
 import Menu from './Menu';
 import {useData, ThemeProvider, TranslationProvider} from '../hooks';
@@ -48,14 +52,18 @@ export default () => {
   };
 
   return (
-    <TranslationProvider>
-      <ThemeProvider theme={theme} setTheme={setTheme}>
-        <PaperProvider>
-          <NavigationContainer theme={navigationTheme}>
-            <Menu />
-          </NavigationContainer>
-        </PaperProvider>
-      </ThemeProvider>
-    </TranslationProvider>
+    <ReduxProvider store={store}>
+      <TranslationProvider>
+        <ThemeProvider theme={theme} setTheme={setTheme}>
+          <PaperProvider>
+            <ToastProvider>
+              <NavigationContainer theme={navigationTheme}>
+                <Menu />
+              </NavigationContainer>
+            </ToastProvider>
+          </PaperProvider>
+        </ThemeProvider>
+      </TranslationProvider>
+    </ReduxProvider>
   );
 };

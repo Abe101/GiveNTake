@@ -528,7 +528,7 @@ const Gallery = () => {
 };
 
 const Components = () => {
-  const {assets, sizes} = useTheme();
+  const {assets, sizes, colors} = useTheme();
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
 
@@ -540,6 +540,7 @@ const Components = () => {
           resizeMode="cover"
           width={sizes.width}
           height={headerHeight}
+          // height={sizes.height}
           source={assets.header}
         />
       ),
@@ -547,7 +548,7 @@ const Components = () => {
   }, [assets.header, navigation, sizes.width, headerHeight]);
 
   return (
-    <Block safe>
+    <Block safe color={colors.secondary}>
       <Block
         scroll
         showsVerticalScrollIndicator={false}

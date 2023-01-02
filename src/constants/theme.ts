@@ -81,8 +81,10 @@ export const ASSETS: ThemeAssets = {
 
   // backgrounds/logo
   logo: require('../assets/images/logo.png'),
-  header: require('../assets/images/header.png'),
+  header: require('../assets/images/header-bg.jpg'),
   background: require('../assets/images/background.png'),
+  screenBg: require('../assets/images/screen-bg.jpg'),
+  screenBgTop: require('../assets/images/screen-bgtopfull.jpg'),
   ios: require('../assets/images/ios.png'),
   android: require('../assets/images/android.png'),
 

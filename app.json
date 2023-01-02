@@ -4,14 +4,14 @@
     "slug": "giventake",
     "owner": "artie",
     "description": "GT - Give'n'Take",
-    "primaryColor": "#CB0C9F",
+    "primaryColor": "#4530b2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#CB0C9F"
+      "backgroundColor": "#4530b2"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -19,13 +19,26 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to upload in the post."
+        }
+      ]
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity" : {
+          "NSAllowsArbitraryLoads" : true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#CB0C9F"
+        "backgroundColor": "#4530b2"
       },
       "package": "com.artie.gt"
     },

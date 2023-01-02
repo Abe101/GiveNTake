@@ -10,13 +10,22 @@ import {THEME as commonTheme} from './theme';
 
 export const COLORS: ThemeColors = {
   // default text color
-  text: '#252F40',
+  // text: '#252F40',
+
+  // our text color:
+  text: '#091c4c',
 
   // base colors
   /** UI color for #primary */
-  primary: '#CB0C9F',
+  // primary: '#CB0C9F',
+
+  // our primary color:
+  primary: '#4530b2',
   /** UI color for #secondary */
-  secondary: '#627594', // '#8392AB',
+  // secondary: '#627594', // '#8392AB',
+
+  // our secondary color:
+  secondary: '#dbe9f7',
   /** UI color for #tertiary */
   tertiary: '#E8AE4C',
 
@@ -67,18 +76,31 @@ export const COLORS: ThemeColors = {
   dribbble: '#EA4C89',
 
   /** icon tint color */
-  icon: '#8392AB',
+  // icon: '#8392AB',
+
+  // icon: '#32cdff',
+  icon: '#DADADA',
 
   /** blur tint color */
   blurTint: 'light',
 
   /** product link color */
-  link: '#CB0C9F',
+  // link: '#CB0C9F',
+
+  link: '#4530b2',
 };
 
 export const GRADIENTS: ThemeGradients = {
-  primary: ['#FF0080', '#7928CA'],
-  secondary: ['#A8B8D8', '#627594'],
+  // primary: ['#FF0080', '#7928CA'],
+
+  // our primary
+  primary: ['#6c5ede', '#4530b2'],
+
+  // secondary: ['#A8B8D8', '#627594'],
+
+  // our secondary
+  secondary: ['#dbe9f7', '#A8B8D8'],
+
   info: ['#21D4FD', '#2152FF'],
   success: ['#98EC2D', '#17AD37'],
   warning: ['#FBCF33', '#F53939'],
