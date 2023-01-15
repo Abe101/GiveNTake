@@ -3,3 +3,4 @@ export {default as register} from './register';
 export {default as getCategories} from './getCategories';
 export {default as getUserProfile} from './getUserProfile';
 export {default as uploadRecieverRequest} from './postReceiverRequest';
+export {default as getLatestPosts} from './getLatestPosts';

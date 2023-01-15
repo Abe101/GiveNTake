@@ -7,7 +7,14 @@ import Text from './Text';
 import {IProduct} from '../constants/types';
 import {useTheme, useTranslation} from '../hooks/';
 
-const Product = ({image, title, type, linkLabel}: IProduct) => {
+const Product = ({
+  image,
+  title,
+  description,
+  type,
+  linkLabel,
+  onLinkPress,
+}: IProduct) => {
   const {t} = useTranslation();
   const {assets, colors, sizes} = useTheme();
 
@@ -21,23 +28,30 @@ const Product = ({image, title, type, linkLabel}: IProduct) => {
       row={isHorizontal}
       marginBottom={sizes.sm}
       width={isHorizontal ? CARD_WIDTH * 2 + sizes.sm : CARD_WIDTH}>
-      <Image
-        resizeMode="cover"
-        source={{uri: image}}
-        style={{
-          height: isHorizontal ? 114 : 110,
-          width: !isHorizontal ? '100%' : sizes.width / 2.435,
-        }}
-      />
+      {image && (
+        <Image
+          resizeMode="cover"
+          source={{uri: image}}
+          style={{
+            height: isHorizontal ? 114 : 110,
+            width: !isHorizontal ? '100%' : sizes.width / 2.435,
+          }}
+        />
+      )}
       <Block
         paddingTop={sizes.s}
         justify="space-between"
         paddingLeft={isHorizontal ? sizes.sm : 0}
         paddingBottom={isHorizontal ? sizes.s : 0}>
-        <Text p marginBottom={sizes.s}>
+        <Text h5 marginBottom={sizes.s} transform="capitalize">
           {title}
         </Text>
-        <TouchableOpacity>
+        <Text p marginBottom={sizes.s} transform="capitalize">
+          {description.length > 50
+            ? `${description?.substring(0, 50)}...`
+            : description}
+        </Text>
+        <TouchableOpacity onPress={onLinkPress}>
           <Block row flex={0} align="center">
             <Text
               p

@@ -1,21 +1,29 @@
 import React, {useCallback, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {useQuery} from '@tanstack/react-query';
 
-import {useData, useTheme, useTranslation} from '../hooks/';
-import {Block, Button, Image, Input, Product, Text} from '../components/';
+import {useTheme, useTranslation} from '../hooks/';
+import {Block, Image, Input, Product} from '../components/';
+import {getLatestPosts} from '../services';
 
 const Home = () => {
   const {t} = useTranslation();
-  const [tab, setTab] = useState<number>(0);
-  const {following, trending} = useData();
-  const [products, setProducts] = useState(following);
-  const {assets, colors, fonts, gradients, sizes} = useTheme();
-
-  const handleProducts = useCallback(
-    (TAB: number) => {
-      setTab(TAB);
-      setProducts(TAB === 0 ? following : trending);
+  const {assets, sizes} = useTheme();
+  const postsQuery = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const data = await getLatestPosts(100);
+      return data;
     },
-    [following, trending, setTab, setProducts],
+  });
+  const [products, setProducts] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (postsQuery.isSuccess) {
+        setProducts(postsQuery.data.data);
+      }
+    }, [postsQuery.data, postsQuery.isSuccess]),
   );
 
   return (
@@ -32,68 +40,6 @@ const Home = () => {
           <Input search placeholder={t('common.search')} />
         </Block>
 
-        {/* toggle products list */}
-        <Block
-          row
-          flex={0}
-          align="center"
-          justify="center"
-          paddingBottom={sizes.sm}>
-          <Button onPress={() => handleProducts(0)}>
-            <Block row align="center">
-              <Block
-                flex={0}
-                radius={6}
-                align="center"
-                justify="center"
-                marginRight={sizes.s}
-                width={sizes.socialIconSize}
-                height={sizes.socialIconSize}
-                gradient={gradients?.[tab === 0 ? 'primary' : 'secondary']}>
-                <Image source={assets.extras} color={colors.white} radius={0} />
-              </Block>
-              <Text
-                p
-                font={fonts?.[tab === 0 ? 'medium' : 'normal']}
-                color={colors.light}>
-                {t('home.following')}
-              </Text>
-            </Block>
-          </Button>
-          <Block
-            gray
-            flex={0}
-            width={1}
-            marginHorizontal={sizes.sm}
-            height={sizes.socialIconSize}
-          />
-          <Button onPress={() => handleProducts(1)}>
-            <Block row align="center">
-              <Block
-                flex={0}
-                radius={6}
-                align="center"
-                justify="center"
-                marginRight={sizes.s}
-                width={sizes.socialIconSize}
-                height={sizes.socialIconSize}
-                gradient={gradients?.[tab === 1 ? 'primary' : 'secondary']}>
-                <Image
-                  radius={0}
-                  color={colors.white}
-                  source={assets.documentation}
-                />
-              </Block>
-              <Text
-                p
-                font={fonts?.[tab === 1 ? 'medium' : 'normal']}
-                color={colors.light}>
-                {t('home.trending')}
-              </Text>
-            </Block>
-          </Button>
-        </Block>
-
         {/* products list */}
         <Block
           scroll
@@ -101,9 +47,18 @@ const Home = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingBottom: sizes.l}}>
           <Block row wrap="wrap" justify="space-between" marginTop={sizes.sm}>
-            {products?.map((product) => (
-              <Product {...product} key={`card-${product?.id}`} />
-            ))}
+            {products?.map((product: any, idx: number) => {
+              return (
+                <Product
+                  key={`card-${product._id}`}
+                  {...(product.productImage && {image: product.productImage})}
+                  title={product.productName}
+                  description={product.productDescription}
+                  type={idx % 3 === 0 ? 'horizontal' : 'vertical'}
+                  linkLabel="See details"
+                />
+              );
+            })}
           </Block>
         </Block>
       </Image>

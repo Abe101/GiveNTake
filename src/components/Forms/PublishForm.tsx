@@ -95,7 +95,7 @@ const PublishForm = () => {
     ],
   });
   const uploadRequestApi = useMutation({
-    mutationKey: ['post'],
+    mutationKey: ['posts'],
     mutationFn: uploadRecieverRequest,
   });
 

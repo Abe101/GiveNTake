@@ -48,10 +48,11 @@ export interface IArticle {
 export interface IProduct {
   id?: number;
   title?: string;
-  description?: string;
+  description: string;
   image?: string;
   timestamp?: number;
   linkLabel?: string;
+  onLinkPress?: (event?: any) => void;
   type: 'vertical' | 'horizontal';
 }
 export interface ILocation {
