@@ -3,12 +3,13 @@ import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useToast} from 'react-native-toast-notifications';
+import {useMutation} from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {useTheme, useTranslation} from '../hooks/';
 import * as regex from '../constants/regex';
 import {Block, Button, Input, Image, Text} from '../components/';
-
-import BaseQuery from '../services/BaseQuery';
+import {register} from '../services';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -27,6 +28,7 @@ interface IRegistrationValidation {
 
 const Register = () => {
   const {t} = useTranslation();
+  const {assets, colors, gradients, sizes} = useTheme();
   const toaster = useToast();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [isValid, setIsValid] = useState<IRegistrationValidation>({
@@ -41,8 +43,9 @@ const Register = () => {
     password: '',
     confirmPassword: '',
   });
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const {assets, colors, gradients, sizes} = useTheme();
+  const {mutate, isSuccess, isLoading, isError, data, error} = useMutation({
+    mutationFn: register,
+  });
 
   const handleChange = useCallback(
     (value) => {
@@ -53,24 +56,53 @@ const Register = () => {
 
   const handleSignUp = useCallback(async () => {
     if (!Object.values(isValid).includes(false)) {
-      setLoading(true);
-      const [isSuccess] = await BaseQuery.registerUser(registration);
+      mutate(registration);
 
       if (isSuccess) {
-        setLoading(false);
+        await AsyncStorage.setItem(
+          '@access-token',
+          JSON.stringify(data.data.access_token),
+        );
         toaster.show('Registration Successful!', {
           type: 'success',
-          placement: 'top',
+          placement: 'bottom',
           duration: 2000,
           animationType: 'slide-in',
         });
         setTimeout(() => {
           navigation.replace('Home');
         }, 2000);
+      } else if (isError) {
+        /* @ts-ignore */
+        if (error.status === 409) {
+          toaster.show('Already registered, please use a different email', {
+            type: 'danger',
+            placement: 'bottom',
+            duration: 3000,
+            animationType: 'slide-in',
+          });
+          /* @ts-ignore */
+        } else if (error.status === 422) {
+          toaster.show('Password and confirm passwords do not match', {
+            type: 'danger',
+            placement: 'bottom',
+            duration: 3000,
+            animationType: 'slide-in',
+          });
+        }
       }
-      setLoading(false);
     }
-  }, [isValid, navigation, registration, toaster]);
+  }, [
+    data.data.access_token,
+    error,
+    isError,
+    isSuccess,
+    isValid,
+    mutate,
+    navigation,
+    registration,
+    toaster,
+  ]);
 
   useEffect(() => {
     setIsValid((state) => ({

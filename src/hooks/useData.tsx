@@ -24,7 +24,7 @@ export const DataContext = React.createContext({});
 export const DataProvider = ({children}: {children: React.ReactNode}) => {
   const [isDark, setIsDark] = useState(false);
   const [theme, setTheme] = useState<ITheme>(light);
-  const [user, setUser] = useState<IUser>(USERS[0]);
+  const [user, setUser] = useState<IUser>(USERS[1]);
   const [users, setUsers] = useState<IUser[]>(USERS);
   const [following, setFollowing] = useState<IProduct[]>(FOLLOWING);
   const [trending, setTrending] = useState<IProduct[]>(TRENDING);

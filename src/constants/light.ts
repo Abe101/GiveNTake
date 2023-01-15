@@ -21,11 +21,13 @@ export const COLORS: ThemeColors = {
 
   // our primary color:
   primary: '#4530b2',
+
   /** UI color for #secondary */
   // secondary: '#627594', // '#8392AB',
 
   // our secondary color:
   secondary: '#dbe9f7',
+
   /** UI color for #tertiary */
   tertiary: '#E8AE4C',
 
@@ -59,8 +61,14 @@ export const COLORS: ThemeColors = {
   overlay: 'rgba(0,0,0,0.3)',
 
   /** UI color for input borderColor on focus */
-  focus: '#E293D3',
-  input: '#252F40',
+  // focus: '#E293D3',
+
+  // Our
+  focus: '#8f83d1',
+  // input: '#252F40',
+
+  // Our
+  input: '#37268e',
 
   /** UI color for switch checked/active color */
   switchOn: '#3A416F',
@@ -87,6 +95,7 @@ export const COLORS: ThemeColors = {
   /** product link color */
   // link: '#CB0C9F',
 
+  // Our
   link: '#4530b2',
 };
 

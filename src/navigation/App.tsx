@@ -5,12 +5,12 @@ import AppLoading from 'expo-app-loading';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {ToastProvider} from 'react-native-toast-notifications';
-import {Provider as ReduxProvider} from 'react-redux';
-
-import {store} from '../redux';
+import {QueryClientProvider, QueryClient} from '@tanstack/react-query';
 
 import Menu from './Menu';
 import {useData, ThemeProvider, TranslationProvider} from '../hooks';
+
+const client = new QueryClient();
 
 export default () => {
   const {isDark, theme, setTheme} = useData();
@@ -52,7 +52,7 @@ export default () => {
   };
 
   return (
-    <ReduxProvider store={store}>
+    <QueryClientProvider client={client}>
       <TranslationProvider>
         <ThemeProvider theme={theme} setTheme={setTheme}>
           <PaperProvider>
@@ -64,6 +64,6 @@ export default () => {
           </PaperProvider>
         </ThemeProvider>
       </TranslationProvider>
-    </ReduxProvider>
+    </QueryClientProvider>
   );
 };

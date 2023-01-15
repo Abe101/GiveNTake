@@ -3,11 +3,13 @@ import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useToast} from 'react-native-toast-notifications';
+import {useMutation} from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import BaseQuery from '../services/BaseQuery';
 import {useTheme, useTranslation} from '../hooks/';
 import * as regex from '../constants/regex';
 import {Block, Button, Input, Image, Text} from '../components/';
+import {login} from '../services';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -21,6 +23,7 @@ interface ISignInValidation {
 
 const SignIn = () => {
   const {t} = useTranslation();
+  const {assets, colors, gradients, sizes} = useTheme();
   const toaster = useToast();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [isValid, setIsValid] = useState<ISignInValidation>({
@@ -30,8 +33,9 @@ const SignIn = () => {
     identifier: '',
     password: '',
   });
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const {assets, colors, gradients, sizes} = useTheme();
+  const {mutate, isSuccess, isError, isLoading, data, error} = useMutation({
+    mutationFn: login,
+  });
 
   const handleChange = useCallback(
     (value) => {
@@ -42,24 +46,46 @@ const SignIn = () => {
 
   const handleSignIn = useCallback(async () => {
     if (!Object.values(isValid).includes(false)) {
-      setLoading(true);
-      const [isSuccess] = await BaseQuery.loginUser(signInFields);
+      mutate(signInFields);
 
       if (isSuccess) {
-        setLoading(false);
+        await AsyncStorage.setItem(
+          '@access-token',
+          JSON.stringify(data.data.access_token),
+        );
+
         toaster.show('Registration Successful!', {
           type: 'success',
-          placement: 'top',
+          placement: 'bottom',
           duration: 2000,
           animationType: 'slide-in',
         });
         setTimeout(() => {
           navigation.replace('Home');
         }, 2000);
+      } else if (isError) {
+        /* @ts-ignore */
+        if (error.status === 404) {
+          toaster.show('User does not exist, did you mean to register?', {
+            type: 'danger',
+            placement: 'bottom',
+            duration: 3000,
+            animationType: 'slide-in',
+          });
+        }
       }
-      setLoading(false);
     }
-  }, [isValid, navigation, signInFields, toaster]);
+  }, [
+    data,
+    error,
+    isError,
+    isSuccess,
+    isValid,
+    mutate,
+    navigation,
+    signInFields,
+    toaster,
+  ]);
 
   useEffect(() => {
     setIsValid((state) => ({

@@ -257,7 +257,7 @@ export interface ThemeAssets {
   header: ImageSourcePropType;
   background: ImageSourcePropType;
   screenBg: ImageSourcePropType;
-  screenBgTop: ImageSourcePropType;
+  whiteBg: ImageSourcePropType;
 
   card1: ImageSourcePropType;
   card2: ImageSourcePropType;

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Linking, StyleSheet} from 'react-native';
-
+import {Animated, StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   useIsDrawerOpen,
   createDrawerNavigator,
@@ -10,8 +10,8 @@ import {
 } from '@react-navigation/drawer';
 
 import Screens from './Screens';
-import {Block, Text, Switch, Button, Image} from '../components';
-import {useData, useTheme, useTranslation} from '../hooks';
+import {Block, Text, Button, Image} from '../components';
+import {useTheme, useTranslation} from '../hooks';
 
 const Drawer = createDrawerNavigator();
 
@@ -85,7 +85,7 @@ const DrawerContent = (
   // screen list for Drawer menu
   const screens = [
     {name: t('screens.home'), to: 'Home', icon: assets.home},
-    {name: t('screens.components'), to: 'Components', icon: assets.components},
+    // {name: t('screens.components'), to: 'Components', icon: assets.components},
     {name: t('screens.articles'), to: 'Articles', icon: assets.document},
     // {name: t('screens.rental'), to: 'Pro', icon: assets.rental},
     {name: t('screens.publish'), to: 'Publish', icon: assets.pluscircle},
@@ -106,6 +106,7 @@ const DrawerContent = (
         <Block flex={0} row align="center" marginBottom={sizes.l}>
           <Image
             radius={0}
+            /* @ts-ignore */
             width={33}
             height={33}
             color={colors.text}
@@ -142,6 +143,7 @@ const DrawerContent = (
                 gradient={gradients[isActive ? 'primary' : 'white']}>
                 <Image
                   radius={0}
+                  /* @ts-ignore */
                   width={14}
                   height={14}
                   source={screen.icon}
@@ -155,53 +157,15 @@ const DrawerContent = (
           );
         })}
 
-        {/* <Block
-          flex={0}
-          height={1}
-          marginRight={sizes.md}
-          marginVertical={sizes.sm}
-          gradient={gradients.menu}
-        />
-
-        <Text semibold transform="uppercase" opacity={0.5}>
-          {t('menu.documentation')}
-        </Text>
-
-        <Button
-          row
-          justify="flex-start"
-          marginTop={sizes.sm}
-          marginBottom={sizes.s}
-          onPress={() =>
-            handleWebLink('https://github.com/creativetimofficial')
-          }>
-          <Block
-            flex={0}
-            radius={6}
-            align="center"
-            justify="center"
-            width={sizes.md}
-            height={sizes.md}
-            marginRight={sizes.s}
-            gradient={gradients.white}>
-            <Image
-              radius={0}
-              width={14}
-              height={14}
-              color={colors.black}
-              source={assets.documentation}
-            />
-          </Block>
-          <Text p color={labelColor}>
-            {t('menu.started')}
-          </Text>
-        </Button> */}
-
         <Block row justify="space-between" marginTop={sizes.l}>
           <Button
             row
             justify="flex-start"
-            onPress={() => handleNavigation('SignIn')}>
+            onPress={() => {
+              AsyncStorage.removeItem('@access-token', () => {
+                handleNavigation('SignIn');
+              });
+            }}>
             <Block
               flex={0}
               radius={6}
@@ -212,6 +176,7 @@ const DrawerContent = (
               marginRight={sizes.s}>
               <Image
                 radius={0}
+                /* @ts-ignore */
                 width={14}
                 height={14}
                 source={assets.exit}

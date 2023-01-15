@@ -1,5 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   Articles,
@@ -19,10 +20,25 @@ const Stack = createStackNavigator();
 export default () => {
   const {t} = useTranslation();
   const screenOptions = useScreenOptions();
+  const [initialRoute, setInitalRoute] = React.useState('');
+
+  React.useEffect(() => {
+    (async () => {
+      await AsyncStorage.getItem('@access-token').then((token) => {
+        if (token) {
+          console.log(JSON.parse(token));
+          setInitalRoute('Home');
+        } else {
+          console.log('no token found');
+          setInitalRoute('SignIn');
+        }
+      });
+    })();
+  }, []);
 
   return (
     <Stack.Navigator
-      initialRouteName="Home" // TODO: Change back to SignIn
+      initialRouteName={initialRoute}
       screenOptions={screenOptions.stack}>
       <Stack.Screen
         name="Home"
@@ -67,11 +83,7 @@ export default () => {
         options={{headerShown: false}}
       />
 
-      <Stack.Screen
-        name="Publish"
-        component={Publish}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name="Publish" component={Publish} />
     </Stack.Navigator>
   );
 };

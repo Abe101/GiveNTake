@@ -110,7 +110,7 @@ const Input = React.forwardRef<TextInput, IInputProps>((inputProps, ref) => {
       zIndex: 2,
       height: '100%',
       fontSize: sizes.p,
-      color: colors.input,
+      color: search ? '#dad6f0' : colors.input,
       paddingHorizontal: sizes.inputPadding,
     },
   ]) as TextStyle;
@@ -161,6 +161,7 @@ const Input = React.forwardRef<TextInput, IInputProps>((inputProps, ref) => {
         {success && assets.check && (
           <Image
             source={assets.check}
+            // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: 12,
               height: 9,

@@ -25,6 +25,7 @@ const Home = () => {
         resizeMode="cover"
         marginTop={-1}
         source={assets.screenBg}
+        /* @ts-ignore */
         height={sizes.height}>
         {/* search input */}
         <Block flex={0} padding={sizes.padding}>
@@ -54,7 +55,7 @@ const Home = () => {
               <Text
                 p
                 font={fonts?.[tab === 0 ? 'medium' : 'normal']}
-                color={colors.white}>
+                color={colors.light}>
                 {t('home.following')}
               </Text>
             </Block>
@@ -86,7 +87,7 @@ const Home = () => {
               <Text
                 p
                 font={fonts?.[tab === 1 ? 'medium' : 'normal']}
-                color={colors.white}>
+                color={colors.light}>
                 {t('home.trending')}
               </Text>
             </Block>

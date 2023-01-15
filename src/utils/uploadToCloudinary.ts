@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default async function uploadToCloudinary(image: any) {
   const formData = new FormData();
 
@@ -5,17 +7,10 @@ export default async function uploadToCloudinary(image: any) {
   formData.append('upload_preset', 'bullstreak');
   formData.append('cloud_name', 'larvae');
 
-  const request = await fetch('https://api.cloudinary.com/v1_1/larvae/upload', {
-    method: 'POST',
-    body: formData,
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      return [true, data.secure_url];
-    })
-    .catch((error) => {
-      return [false, error];
-    });
+  const request = await axios
+    .post('https://api.cloudinary.com/v1_1/larvae/upload', formData)
+    .then((res) => res.data)
+    .catch((error) => error.response);
 
   return request;
 }

@@ -286,6 +286,14 @@ export interface IButtonProps extends TouchableOpacityProps, ISpacing {
    */
   gradient?: string[];
   /**
+   * Gradient Start
+   */
+  start?: LinearGradientPoint | null | undefined;
+  /**
+   * Gradient End
+   */
+  end?: LinearGradientPoint | null | undefined;
+  /**
    * Renders a backgroundColor directly from the colors.primary value
    * @see https://reactnative.dev/docs/view-style-props#backgroundcolor
    */

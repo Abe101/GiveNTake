@@ -27,7 +27,7 @@ export const USERS: IUser[] = [
   {
     id: 2,
     name: 'Bella Audrey',
-    department: 'Marketing Manager',
+    department: 'bella@audrey.com',
     stats: {posts: 323, followers: 53200, following: 749000},
     social: {twitter: 'CreativeTim', dribbble: 'creativetim'},
     about:

@@ -1,18 +1,25 @@
 import React, {useState, useEffect, useCallback, createRef} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   Platform,
   TextInput,
-  ImageSourcePropType,
   TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
-import {Menu, Chip} from 'react-native-paper';
+import {Chip} from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import {useToast} from 'react-native-toast-notifications';
+import {useQueries, useMutation} from '@tanstack/react-query';
 
-import {Block, Text, Input, Button, Image} from '../../components';
-import {useTheme, useTranslation} from '../../hooks';
+import {Block, Text, Input, Button, Image, Modal} from '../../components';
+import {useTheme, useTranslation, useDisclose} from '../../hooks';
 import {uploadToCloudinary} from '../../utils';
+import {
+  getCategories,
+  getUserProfile,
+  uploadRecieverRequest,
+} from '../../services';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -23,7 +30,7 @@ interface IFormFields {
   description: string;
   category: string;
   tags: string[];
-  prodImg: ImageSourcePropType | null;
+  prodImg: ImagePicker.ImageInfo | null;
 }
 
 interface IFormFieldsValidation {
@@ -34,12 +41,24 @@ interface IFormFieldsValidation {
   category: boolean;
 }
 
+export interface IPost {
+  productName: string;
+  productCompany: string;
+  productQuantity: number;
+  productDescription: string;
+  category: string;
+  tags?: string[];
+  productImage?: string;
+  authorEmail: string;
+}
+
 const PublishForm = () => {
+  const navigation = useNavigation();
   const {t} = useTranslation();
   const toaster = useToast();
-  const {sizes, colors, gradients} = useTheme();
-  const [hasCameraAccess, setHasCameraAccess] = useState<boolean>(false);
-  const [hasPickerAccess, setHasPickerAccess] = useState<boolean>(false);
+  const {sizes, colors, gradients, assets} = useTheme();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
   const [formFields, setFormFields] = useState<IFormFields>({
     prodName: '',
     prodBrand: '',
@@ -50,48 +69,42 @@ const PublishForm = () => {
     prodImg: null,
   });
   const [isValid, setIsValid] = useState<IFormFieldsValidation>({
-    prodName: false,
-    prodBrand: false,
-    prodQty: false,
-    description: false,
-    category: false,
+    prodName: true,
+    prodBrand: true,
+    prodQty: true,
+    description: true,
+    category: true,
   });
-  const [tagInputValue, setTagInputValue] = useState<string>('');
-  const [catMenuOpen, setCatMenuOpen] = useState<boolean>(false);
+  const [tagInputValue, setTagInputValue] = useState('');
+  const {
+    isOpen: isCategoryMenuOpen,
+    onOpen: onCategoryMenuOpen,
+    onClose: onCategoryMenuClose,
+  } = useDisclose();
   const tagInputRef = createRef<TextInput>();
-
-  const requestPickerPermission = async () => {
-    if (hasPickerAccess) {
-      return;
-    }
-
-    try {
-      const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      setHasPickerAccess(status === 'granted');
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 2));
-    }
-  };
-
-  const requestCameraPermission = async () => {
-    if (hasCameraAccess) {
-      return;
-    }
-
-    try {
-      const {status} = await ImagePicker.requestCameraPermissionsAsync();
-      setHasCameraAccess(status === 'granted');
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 2));
-    }
-  };
+  const [categoryApi, userApi] = useQueries({
+    queries: [
+      {
+        queryKey: ['categories'],
+        queryFn: getCategories,
+      },
+      {
+        queryKey: ['user'],
+        queryFn: getUserProfile,
+      },
+    ],
+  });
+  const uploadRequestApi = useMutation({
+    mutationKey: ['post'],
+    mutationFn: uploadRecieverRequest,
+  });
 
   useFocusEffect(
     useCallback(() => {
-      requestPickerPermission();
-      requestCameraPermission();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
+      if (categoryApi.isSuccess) {
+        setCategoryList(categoryApi.data.data);
+      }
+    }, [categoryApi.data, categoryApi.isSuccess]),
   );
 
   const handleChange = useCallback(
@@ -101,34 +114,100 @@ const PublishForm = () => {
     [setFormFields],
   );
 
-  const openCatMenu = () => setCatMenuOpen(true);
-  const closeCatMenu = () => setCatMenuOpen(false);
+  const handleImageChange = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: false,
+    });
+
+    if (!result.cancelled) {
+      setFormFields((prev) => ({
+        ...prev,
+        prodImg: result,
+      }));
+    }
+  };
 
   useEffect(() => {
     setIsValid((state) => ({
       ...state,
       prodName: Boolean(formFields.prodName),
       prodBrand: Boolean(formFields.prodBrand),
-      prodQty: Boolean(formFields.prodQty),
+      prodQty: Boolean(Number(formFields.prodQty)),
       description: Boolean(formFields.description),
       category: Boolean(formFields.category),
     }));
   }, [formFields, setIsValid]);
 
+  const getFileName = (uri: string) => {
+    const uriSplit = uri.split('/');
+    const nameWithExt = uriSplit[uriSplit.length - 1];
+    const nameAndExtSplit = nameWithExt.split('.');
+
+    return nameAndExtSplit[0];
+  };
+
   const handleSubmit = useCallback(async () => {
     if (!Object.values(isValid).includes(false)) {
-      console.log(JSON.stringify(formFields, null, 2));
-    } else if (!isValid.category) {
-      // toaster.show({
-      //   type: 'danger',
-      // });
+      setIsProcessing(true);
+      console.log('formFields', JSON.stringify(formFields, null, 2));
+
+      const userEmail = userApi.data.data.email;
+
+      const body: IPost = {
+        productName: formFields.prodName,
+        productCompany: formFields.prodBrand,
+        productQuantity: Number(formFields.prodQty),
+        category: formFields.category,
+        productDescription: formFields.description,
+        ...(formFields.tags.length && {tags: formFields.tags}),
+        authorEmail: userEmail,
+      };
+
+      if (formFields.prodImg) {
+        const uploadedImgData = await uploadToCloudinary({
+          uri: formFields.prodImg.uri,
+          type: formFields.prodImg.type,
+          name: getFileName(formFields.prodImg.uri),
+        });
+
+        const uploadedImgUrl = uploadedImgData.secure_url;
+        body.productImage = uploadedImgUrl;
+      }
+
+      try {
+        uploadRequestApi.mutateAsync(body);
+
+        setIsProcessing(false);
+        toaster.show('Uploaded!', {
+          type: 'success',
+          placement: 'bottom',
+          duration: 2000,
+          animationType: 'slide-in',
+        });
+        setTimeout(() => {
+          navigation.navigate('Home');
+        }, 1000);
+      } catch (error) {
+        setIsProcessing(false);
+        console.log('posting request error', JSON.stringify(error, null, 2));
+        toaster.show('There was an issue while posting. Please try later', {
+          type: 'danger',
+          placement: 'bottom',
+          duration: 3000,
+          animationType: 'slide-in',
+        });
+      }
     }
-  }, [formFields, isValid]);
+  }, [formFields, isValid, navigation, toaster, uploadRequestApi, userApi]);
 
   return (
-    <Block>
+    <Block marginBottom={sizes.xxl}>
       <Block justify="center" row>
-        <Text white h5>
+        <Text color={colors.text} h5>
           {t('publish.formTitle')}
         </Text>
       </Block>
@@ -137,6 +216,7 @@ const PublishForm = () => {
           autoCapitalize="none"
           autoCorrect={false}
           marginTop={sizes.sm}
+          color={colors.dark}
           placeholder={t('publish.productName')}
           success={Boolean(formFields.prodName && isValid.prodName)}
           danger={Boolean(formFields.prodName && !isValid.prodName)}
@@ -149,6 +229,7 @@ const PublishForm = () => {
           autoCapitalize="none"
           autoCorrect={false}
           marginTop={sizes.sm}
+          color={colors.dark}
           placeholder={t('publish.productBrand')}
           success={Boolean(formFields.prodBrand && isValid.prodBrand)}
           danger={Boolean(formFields.prodBrand && !isValid.prodBrand)}
@@ -164,18 +245,26 @@ const PublishForm = () => {
           autoCorrect={false}
           marginTop={sizes.sm}
           keyboardType="number-pad"
+          color={colors.dark}
           placeholder={t('publish.productQuantity')}
           success={Boolean(formFields.prodQty && isValid.prodQty)}
           danger={Boolean(formFields.prodQty && !isValid.prodQty)}
           onChangeText={(value) => handleChange({prodQty: value})}
         />
         <Text danger>
-          {formFields.prodQty && !isValid.prodQty ? t('common.required') : ''}
+          {formFields.prodQty && !isValid.prodQty
+            ? isNaN(Number(formFields.prodQty))
+              ? t('publish.productQuantityErrorNaN')
+              : Number(formFields.prodQty) < 1
+              ? t('publish.productQuantityErrorLessThanOne')
+              : t('common.required')
+            : null}
         </Text>
         <Input
           autoCapitalize="none"
           autoCorrect={false}
           marginTop={sizes.sm}
+          color={colors.dark}
           placeholder={t('publish.description')}
           success={Boolean(formFields.description && isValid.description)}
           danger={Boolean(formFields.description && !isValid.description)}
@@ -187,34 +276,29 @@ const PublishForm = () => {
             : ''}
         </Text>
         <Block marginTop={sizes.sm}>
-          <Menu
-            visible={catMenuOpen}
-            onDismiss={closeCatMenu}
-            anchor={
-              <Button
-                primary
-                shadow={!isAndroid}
-                marginVertical={sizes.s}
-                marginHorizontal={sizes.sm}
-                onPress={openCatMenu}>
-                <Text
-                  {...(formFields.category !== ''
-                    ? {white: true, transform: 'uppercase'}
-                    : {gray: true})}>
-                  {formFields.category !== ''
-                    ? formFields.category
-                    : t('publish.chooseCategory')}
-                </Text>
-              </Button>
-            }>
-            <Menu.Item
-              onPress={() => {
-                handleChange({category: 'something'});
-                closeCatMenu();
-              }}
-              title="something"
-            />
-          </Menu>
+          <Button
+            flex={1}
+            row
+            gradient={gradients.primary}
+            shadow={!isAndroid}
+            onPress={onCategoryMenuOpen}>
+            <Block
+              row
+              align="center"
+              justify="space-between"
+              paddingHorizontal={sizes.sm}>
+              <Text white bold transform="uppercase" marginRight={sizes.sm}>
+                {formFields.category !== ''
+                  ? formFields.category
+                  : t('publish.chooseCategory')}
+              </Text>
+              <Image
+                source={assets.arrow}
+                color={colors.white}
+                transform={[{rotate: '90deg'}]}
+              />
+            </Block>
+          </Button>
         </Block>
         <Block width={sizes.width - sizes.xxl}>
           <Block row justify="flex-start" align="center" wrap="wrap">
@@ -224,6 +308,7 @@ const PublishForm = () => {
                   key={idx}
                   // eslint-disable-next-line react-native/no-inline-styles
                   style={{margin: sizes.s, height: 40}}
+                  elevated
                   icon="close"
                   onPress={() => {
                     const newTags = [...formFields.tags];
@@ -239,6 +324,7 @@ const PublishForm = () => {
             autoCapitalize="none"
             autoCorrect={false}
             label={`${t('publish.addTags')}\n(Press space bar to enter a tag)`}
+            color={colors.dark}
             placeholder={t('publish.addTags')}
             marginTop={sizes.s}
             value={tagInputValue}
@@ -259,7 +345,16 @@ const PublishForm = () => {
         </Block>
         <Block row justify="center">
           {formFields.prodImg ? (
-            <Image source={formFields.prodImg} />
+            <TouchableOpacity onPress={handleImageChange}>
+              <Image
+                source={{uri: formFields.prodImg.uri}}
+                /* @ts-ignore */
+                height={formFields.prodImg.height / 12}
+                width={sizes.width - sizes.xxl - 20}
+                marginTop={sizes.sm}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           ) : (
             <TouchableOpacity
               // eslint-disable-next-line react-native/no-inline-styles
@@ -270,23 +365,58 @@ const PublishForm = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderWidth: 1,
-                borderColor: colors.primary,
+                borderColor: colors.dark,
                 borderRadius: sizes.cardRadius,
-              }}>
-              <Text>{t('publish.addPhoto')}</Text>
+              }}
+              onPress={handleImageChange}>
+              <Text color={colors.text}>{t('publish.addPhoto')}</Text>
             </TouchableOpacity>
           )}
         </Block>
         <Button
-          gradient={gradients.primary}
-          marginVertical={sizes.m}
-          disabled={Object.values(isValid).includes(false)}
+          {...(Object.values(isValid).includes(false)
+            ? {color: colors.gray}
+            : {gradient: gradients.primary})}
+          row
+          shadow={!isAndroid}
+          marginVertical={sizes.sm}
+          disabled={Object.values(isValid).includes(false) || isProcessing}
           onPress={handleSubmit}>
-          <Text white bold transform="uppercase">
-            {t('publish.submitForm')}
-          </Text>
+          <>
+            {isProcessing && (
+              <ActivityIndicator
+                animating={isProcessing}
+                color={colors.secondary.toString()}
+                style={{marginRight: sizes.base}}
+              />
+            )}
+            <Text white bold transform="uppercase">
+              {t('publish.submitForm')}
+            </Text>
+          </>
         </Button>
       </Block>
+      <Modal visible={isCategoryMenuOpen} onRequestClose={onCategoryMenuClose}>
+        <FlatList
+          data={categoryList}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({item}) => (
+            <Button
+              marginBottom={sizes.sm}
+              onPress={() => {
+                setFormFields((prev) => ({
+                  ...prev,
+                  category: item,
+                }));
+                onCategoryMenuClose();
+              }}>
+              <Text p white semibold transform="uppercase">
+                {item}
+              </Text>
+            </Button>
+          )}
+        />
+      </Modal>
     </Block>
   );
 };

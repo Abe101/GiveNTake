@@ -19,7 +19,7 @@ const Profile = () => {
     (sizes.width - (IMAGE_VERTICAL_SIZE + sizes.sm) * 2) / 2;
 
   return (
-    <Block safe marginTop={sizes.md}>
+    <Block safe marginTop={sizes.md} color={colors.secondary}>
       <Block
         scroll
         paddingHorizontal={sizes.s}
@@ -31,8 +31,8 @@ const Profile = () => {
             resizeMode="cover"
             padding={sizes.sm}
             paddingBottom={sizes.l}
-            radius={sizes.cardRadius}
-            source={assets.background}>
+            radius={sizes.buttonRadius}
+            source={assets.screenBg}>
             <Block flex={1} row justify="space-between" align="center">
               <Button
                 row
@@ -41,6 +41,7 @@ const Profile = () => {
                 onPress={() => navigation.goBack()}>
                 <Image
                   radius={0}
+                  /* @ts-ignore */
                   width={10}
                   height={18}
                   color={colors.white}
@@ -61,15 +62,16 @@ const Profile = () => {
             </Block>
             <Block flex={0} align="center">
               <Image
+                /* @ts-ignore */
                 width={64}
                 height={64}
                 marginBottom={sizes.sm}
                 source={{uri: user?.avatar}}
               />
-              <Text h5 center white>
+              <Text h5 center color={colors.text}>
                 {user?.name}
               </Text>
-              <Text p center white>
+              <Text p center color={colors.text}>
                 {user?.department}
               </Text>
             </Block>
@@ -87,15 +89,14 @@ const Profile = () => {
 
           {/* profile: posts */}
           <Block paddingHorizontal={sizes.sm} marginTop={sizes.s}>
-            <Block row align="center" justify="space-between">
+            <Block
+              row
+              align="center"
+              justify="flex-start"
+              marginVertical={sizes.s}>
               <Text h5 semibold>
                 {t('profile.posts')}
               </Text>
-              <Button>
-                <Text p primary semibold>
-                  {t('common.viewall')}
-                </Text>
-              </Button>
             </Block>
             <Block row justify="space-between" wrap="wrap">
               <Image
