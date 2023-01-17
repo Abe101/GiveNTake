@@ -12,6 +12,7 @@ import {
   SignIn,
   ProfileSettings,
   Publish,
+  PostDetails,
 } from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
 
@@ -84,6 +85,12 @@ export default () => {
       />
 
       <Stack.Screen name="Publish" component={Publish} />
+
+      <Stack.Screen
+        name="PostDetails"
+        component={PostDetails}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };

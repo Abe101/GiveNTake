@@ -265,6 +265,7 @@ const PublishForm = () => {
           autoCorrect={false}
           marginTop={sizes.sm}
           color={colors.dark}
+          multiline
           placeholder={t('publish.description')}
           success={Boolean(formFields.description && isValid.description)}
           danger={Boolean(formFields.description && !isValid.description)}

@@ -34,13 +34,8 @@ export interface IArticle {
   id?: number;
   title?: string;
   description?: string;
-  category?: ICategory;
   image?: string;
-  location?: ILocation;
-  rating?: number;
-  user?: IUser;
-  offers?: IProduct[];
-  options?: IArticleOptions[];
+  category?: string;
   timestamp?: number;
   onPress?: (event?: any) => void;
 }

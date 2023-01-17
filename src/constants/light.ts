@@ -26,7 +26,8 @@ export const COLORS: ThemeColors = {
   // secondary: '#627594', // '#8392AB',
 
   // our secondary color:
-  secondary: '#dbe9f7',
+  // secondary: '#dbe9f7',
+  secondary: '#fcfaff',
 
   /** UI color for #tertiary */
   tertiary: '#E8AE4C',

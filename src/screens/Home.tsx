@@ -1,14 +1,17 @@
 import React, {useCallback, useState} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useQuery} from '@tanstack/react-query';
 
 import {useTheme, useTranslation} from '../hooks/';
 import {Block, Image, Input, Product} from '../components/';
 import {getLatestPosts} from '../services';
+import {usePostStore} from '../store';
+import {PostState} from '../store/usePostStore';
 
 const Home = () => {
   const {t} = useTranslation();
   const {assets, sizes} = useTheme();
+  const navigation = useNavigation();
   const postsQuery = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
@@ -17,14 +20,25 @@ const Home = () => {
     },
   });
   const [products, setProducts] = useState([]);
+  const [setPostId, setPostEmail] = usePostStore((state: PostState) => [
+    state.setId,
+    state.setEmail,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
       if (postsQuery.isSuccess) {
-        setProducts(postsQuery.data.data);
+        setProducts(postsQuery.data?.data);
       }
     }, [postsQuery.data, postsQuery.isSuccess]),
   );
+
+  const onProductPress = (product: any) => {
+    setPostId(product._id);
+    setPostEmail(product.authorEmail);
+
+    navigation.navigate('PostDetails');
+  };
 
   return (
     <Block safe>
@@ -56,6 +70,7 @@ const Home = () => {
                   description={product.productDescription}
                   type={idx % 3 === 0 ? 'horizontal' : 'vertical'}
                   linkLabel="See details"
+                  onLinkPress={() => onProductPress(product)}
                 />
               );
             })}

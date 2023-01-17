@@ -4,3 +4,6 @@ export {default as getCategories} from './getCategories';
 export {default as getUserProfile} from './getUserProfile';
 export {default as uploadRecieverRequest} from './postReceiverRequest';
 export {default as getLatestPosts} from './getLatestPosts';
+export {default as getPostsByCategory} from './getPostsByCategory';
+export {default as getPostById} from './getPostById';
+export {default as getUserByEmail} from './getUserByEmail';

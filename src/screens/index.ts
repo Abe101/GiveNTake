@@ -20,3 +20,4 @@ export {default as Pro} from './Pro';
 export {default as SignIn} from './SignIn';
 export {default as ProfileSettings} from './ProfileSettings';
 export {default as Publish} from './Publish';
+export {default as PostDetails} from './PostDetails';
