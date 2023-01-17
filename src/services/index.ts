@@ -7,3 +7,4 @@ export {default as getLatestPosts} from './getLatestPosts';
 export {default as getPostsByCategory} from './getPostsByCategory';
 export {default as getPostById} from './getPostById';
 export {default as getUserByEmail} from './getUserByEmail';
+export {default as getPostsByUser} from './getPostsByUser';

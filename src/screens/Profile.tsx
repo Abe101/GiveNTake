@@ -1,22 +1,53 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {ActivityIndicator} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/core';
+import {useQueries} from '@tanstack/react-query';
 
-import {Block, Button, Image, Text} from '../components/';
-import {useData, useTheme, useTranslation} from '../hooks/';
+import {Block, Button, Image, Text, Product} from '../components/';
+import {useTheme, useTranslation} from '../hooks/';
+import {getPostsByUser, getUserProfile} from '../services';
+import {IPost} from '../components/Forms/PublishForm';
+import {usePostStore} from '../store';
+import {PostState} from '../store/usePostStore';
 
 const Profile = () => {
-  const {user} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation();
   const {assets, colors, sizes} = useTheme();
+  const [userDetails, setUserDetails] = useState({});
+  const [userPosts, setUserPosts] = useState<Array<Partial<IPost>>>([]);
+  const [userQuery, postsQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['user'],
+        queryFn: getUserProfile,
+      },
+      {
+        /* @ts-ignore */
+        queryKey: ['posts', userDetails?.email],
+        /* @ts-ignore */
+        queryFn: () => getPostsByUser(userDetails?.email),
+        enabled: Object.keys(userDetails).length !== 0,
+      },
+    ],
+  });
+  const [setPostId, setAuthorEmail] = usePostStore((state: PostState) => [
+    state.setId,
+    state.setEmail,
+  ]);
 
-  const IMAGE_SIZE = (sizes.width - (sizes.padding + sizes.sm) * 2) / 3;
-  const IMAGE_VERTICAL_SIZE =
-    (sizes.width - (sizes.padding + sizes.sm) * 2) / 2;
-  const IMAGE_MARGIN = (sizes.width - IMAGE_SIZE * 3 - sizes.padding * 2) / 2;
-  const IMAGE_VERTICAL_MARGIN =
-    (sizes.width - (IMAGE_VERTICAL_SIZE + sizes.sm) * 2) / 2;
+  useEffect(() => {
+    if (userQuery.isSuccess) {
+      setUserDetails(userQuery.data.data);
+    }
+  }, [userQuery]);
+
+  useEffect(() => {
+    if (postsQuery.isSuccess) {
+      setUserPosts(postsQuery.data.data);
+    }
+  }, [postsQuery]);
 
   return (
     <Block safe marginTop={sizes.md} color={colors.secondary}>
@@ -66,13 +97,25 @@ const Profile = () => {
                 width={64}
                 height={64}
                 marginBottom={sizes.sm}
-                source={{uri: user?.avatar}}
+                source={{
+                  uri:
+                    /* @ts-ignore */
+                    userDetails?.avatar ??
+                    /* @ts-ignore */
+                    `https://api.dicebear.com/5.x/lorelei-neutral/svg?seed=${userDetails?.name}`,
+                }}
               />
               <Text h5 center color={colors.text}>
-                {user?.name}
+                {
+                  /* @ts-ignore */
+                  userDetails?.name
+                }
               </Text>
               <Text p center color={colors.text}>
-                {user?.department}
+                {
+                  /* @ts-ignore */
+                  userDetails?.email
+                }
               </Text>
             </Block>
           </Image>
@@ -83,7 +126,10 @@ const Profile = () => {
               {t('profile.aboutMe')}
             </Text>
             <Text p lineHeight={26}>
-              {user?.about}
+              {
+                /* @ts-ignore */
+                userDetails?.about ?? 'No about me provided'
+              }
             </Text>
           </Block>
 
@@ -98,35 +144,46 @@ const Profile = () => {
                 {t('profile.posts')}
               </Text>
             </Block>
-            <Block row justify="space-between" wrap="wrap">
-              <Image
-                resizeMode="cover"
-                source={assets?.photo1}
-                style={{
-                  width: IMAGE_VERTICAL_SIZE + IMAGE_MARGIN / 2,
-                  height: IMAGE_VERTICAL_SIZE * 2 + IMAGE_VERTICAL_MARGIN,
-                }}
-              />
-              <Block marginLeft={sizes.m}>
-                <Image
-                  resizeMode="cover"
-                  source={assets?.photo2}
-                  marginBottom={IMAGE_VERTICAL_MARGIN}
-                  style={{
-                    height: IMAGE_VERTICAL_SIZE,
-                    width: IMAGE_VERTICAL_SIZE,
-                  }}
-                />
-                <Image
-                  resizeMode="cover"
-                  source={assets?.photo3}
-                  style={{
-                    height: IMAGE_VERTICAL_SIZE,
-                    width: IMAGE_VERTICAL_SIZE,
-                  }}
-                />
+
+            {postsQuery.isLoading ? (
+              <Block justify="center" align="center">
+                <ActivityIndicator />
               </Block>
-            </Block>
+            ) : (
+              <Block
+                scroll
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{paddingBottom: sizes.l}}>
+                <Block
+                  row
+                  wrap="wrap"
+                  justify="space-between"
+                  marginTop={sizes.sm}>
+                  {userPosts?.map((product: any) => {
+                    return (
+                      <Product
+                        key={`card-${product._id}`}
+                        {...(product.productImage && {
+                          image: product.productImage,
+                        })}
+                        title={product.productName}
+                        description={product.productDescription}
+                        type={'vertical'}
+                        linkLabel="See details"
+                        onLinkPress={() => {
+                          /* @ts-ignore */
+                          setPostId(product._id);
+                          /* @ts-ignore */
+                          setAuthorEmail(product.authorEmail);
+
+                          navigation.navigate('PostDetails');
+                        }}
+                      />
+                    );
+                  })}
+                </Block>
+              </Block>
+            )}
           </Block>
         </Block>
       </Block>
