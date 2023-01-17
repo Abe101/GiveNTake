@@ -7,3 +7,4 @@ export {
   useTranslation,
 } from './useTranslation';
 export {default as useDisclose} from './useDisclose';
+export {default as useDebounce} from './useDebounce';

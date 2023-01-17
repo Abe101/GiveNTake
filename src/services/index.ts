@@ -8,3 +8,4 @@ export {default as getPostsByCategory} from './getPostsByCategory';
 export {default as getPostById} from './getPostById';
 export {default as getUserByEmail} from './getUserByEmail';
 export {default as getPostsByUser} from './getPostsByUser';
+export {default as searchPostsByName} from './searchPostsByName';

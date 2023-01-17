@@ -106,7 +106,8 @@
   "home": {
     "title": "GT",
     "following": "Following",
-    "trending": "Trending"
+    "trending": "Trending",
+    "resultsFound": "{{count}} found"
   },
   "register": {
     "title": "Welcome",

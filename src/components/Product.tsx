@@ -46,7 +46,7 @@ const Product = ({
         <Text h5 marginBottom={sizes.s} transform="capitalize">
           {title}
         </Text>
-        <Text p marginBottom={sizes.s} transform="capitalize">
+        <Text p marginBottom={sizes.s}>
           {description.length > 50
             ? `${description?.substring(0, 50)}...`
             : description}
