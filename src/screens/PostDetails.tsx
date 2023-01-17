@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {useQuery} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
+import dayjs from 'dayjs';
 
 import {Block, Text, Image, Button} from '../components';
 import {useTheme, useTranslation} from '../hooks';
@@ -127,6 +128,17 @@ const PostDetails = () => {
               </Text>
               <Text p marginVertical={sizes.s} transform="uppercase">
                 {postDetails.category}
+              </Text>
+            </Block>
+            <Block marginVertical={sizes.s}>
+              <Text h5 gradient={gradients.primary}>
+                {t('postDetails.createdAt')}
+              </Text>
+              <Text p marginVertical={sizes.s}>
+                {
+                  /* @ts-ignore */
+                  dayjs(postDetails?.createdAt).format('DD-MMM-YYYY hh:mm a')
+                }
               </Text>
             </Block>
             <Block marginVertical={sizes.s}>
