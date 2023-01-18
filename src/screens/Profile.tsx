@@ -100,9 +100,7 @@ const Profile = () => {
                 source={{
                   uri:
                     /* @ts-ignore */
-                    userDetails?.avatar ??
-                    /* @ts-ignore */
-                    `https://api.dicebear.com/5.x/lorelei-neutral/svg?seed=${userDetails?.name}`,
+                    userDetails?.avatar,
                 }}
               />
               <Text h5 center color={colors.text}>

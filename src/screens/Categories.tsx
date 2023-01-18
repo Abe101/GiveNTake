@@ -9,7 +9,7 @@ import {getCategories, getPostsByCategory} from '../services';
 import {usePostStore} from '../store';
 import {PostState} from '../store/usePostStore';
 
-const Articles = () => {
+const Categories = () => {
   const navigation = useNavigation();
   const {colors, gradients, sizes} = useTheme();
   const [categories, setCategories] = useState([]);
@@ -118,4 +118,4 @@ const Articles = () => {
   );
 };
 
-export default Articles;
+export default Categories;

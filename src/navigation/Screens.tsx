@@ -1,14 +1,14 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
 
 import {
-  Articles,
+  Categories,
   Components,
   Home,
   Profile,
   Register,
-  Pro,
   SignIn,
   ProfileSettings,
   Publish,
@@ -23,18 +23,27 @@ export default () => {
   const screenOptions = useScreenOptions();
   const [initialRoute, setInitalRoute] = React.useState('');
 
+  async function checkForUser() {
+    const token = await AsyncStorage.getItem('@access-token').then((value) => {
+      if (value) {
+        return JSON.parse(value);
+      } else {
+        return null;
+      }
+    });
+
+    if (token) {
+      setInitalRoute('Home');
+      return true;
+    } else {
+      setInitalRoute('SignIn');
+      return false;
+    }
+  }
+
   React.useEffect(() => {
-    (async () => {
-      await AsyncStorage.getItem('@access-token').then((token) => {
-        if (token) {
-          console.log(JSON.parse(token));
-          setInitalRoute('Home');
-        } else {
-          console.log('no token found');
-          setInitalRoute('SignIn');
-        }
-      });
-    })();
+    (async () => await checkForUser())();
+    SplashScreen.hideAsync();
   }, []);
 
   return (
@@ -54,12 +63,10 @@ export default () => {
       />
 
       <Stack.Screen
-        name="Articles"
-        component={Articles}
-        options={{title: t('navigation.articles')}}
+        name="Categories"
+        component={Categories}
+        options={{title: t('navigation.categories')}}
       />
-
-      <Stack.Screen name="Pro" component={Pro} options={screenOptions.pro} />
 
       <Stack.Screen
         name="Profile"

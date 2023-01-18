@@ -56,7 +56,11 @@ const Register = () => {
 
   const handleSignUp = useCallback(async () => {
     if (!Object.values(isValid).includes(false)) {
-      mutate(registration);
+      const registerBody = {
+        ...registration,
+        avatar: `https://api.dicebear.com/5.x/lorelei-neutral/svg?seed=${registration.name}`,
+      };
+      mutate(registerBody);
 
       if (isSuccess) {
         await AsyncStorage.setItem(

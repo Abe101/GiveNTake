@@ -80,16 +80,24 @@ const PostDetails = () => {
               </Text>
             </Button>
 
-            {postDetails.productImage !== '' && (
-              <Block>
-                <Image
-                  source={{uri: postDetails.productImage}}
-                  resizeMode="contain"
-                  /* @ts-ignore */
-                  height={240}
-                />
-              </Block>
+            {postDetails.productImage !== '' ? (
+              <Image
+                source={{uri: postDetails.productImage}}
+                resizeMode="contain"
+                /* @ts-ignore */
+                height={240}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: 'https://dummyimage.com/600x400/e9ecef/091c4c&text=No+Image',
+                }}
+                resizeMode="contain"
+                /* @ts-ignore */
+                height={240}
+              />
             )}
+
             <Block marginVertical={sizes.s}>
               <Text h5 gradient={gradients.primary}>
                 {t('postDetails.name')}
@@ -146,7 +154,9 @@ const PostDetails = () => {
                 {t('postDetails.tags')}
               </Text>
               <Text p marginVertical={sizes.s}>
-                {postDetails?.tags?.join(', ')}
+                {postDetails?.tags?.length
+                  ? postDetails?.tags?.join(', ')
+                  : 'No tags found'}
               </Text>
             </Block>
 

@@ -70,7 +70,7 @@
   "screens": {
     "home": "Home",
     "components": "Components",
-    "articles": "Articles",
+    "categories": "Categories",
     "rental": "Rental",
     "profile": "Profile",
     "settings": "Settings",
@@ -82,7 +82,7 @@
   "navigation": {
     "home": "Home",
     "components": "Components",
-    "articles": "Articles",
+    "categories": "Categories",
     "rentals": "Rentals",
     "rental": "Best Deal",
     "booking": "Booking",

@@ -52,119 +52,103 @@ const ProfileSettings = () => {
 
   return (
     <Block safe marginTop={sizes.md}>
-      <Block
-        scroll
-        paddingHorizontal={sizes.s}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: sizes.padding}}>
-        <Block flex={0}>
-          <Image
-            background
-            resizeMode="cover"
-            padding={sizes.sm}
-            paddingBottom={sizes.m}
-            radius={sizes.cardRadius}
-            source={assets.background}>
+      <Image
+        background
+        resizeMode="cover"
+        source={assets.whiteBg}
+        /* @ts-ignore */
+        height={sizes.height}>
+        <Block
+          scroll
+          paddingHorizontal={sizes.s}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: sizes.padding}}>
+          <Block flex={0}>
             <Button
               row
               flex={0}
               justify="flex-start"
+              margin={sizes.m}
               onPress={() => navigation.goBack()}>
               <Image
                 radius={0}
+                /* @ts-ignore */
                 width={10}
                 height={18}
-                color={colors.white}
+                color={colors.text}
                 source={assets.arrow}
                 transform={[{rotate: '180deg'}]}
               />
-              <Text p white marginLeft={sizes.s}>
+              <Text h5 marginLeft={sizes.s} bold>
                 {t('profileSettings.title')}
               </Text>
             </Button>
-          </Image>
 
-          <Block paddingHorizontal={sizes.m}>
-            <Input
-              autoCapitalize="none"
-              marginTop={sizes.m}
-              marginBottom={sizes.m}
-              label={t('profileSettings.changePhoneNumber')}
-              keyboardType="number-pad"
-              placeholder={t('profileSettings.changePhoneNumber')}
-              success={Boolean(updateForm.phoneNumber && isValid.phoneNumber)}
-              danger={Boolean(updateForm.phoneNumber && !isValid.phoneNumber)}
-              onChangeText={(value) => handleChange({phoneNumber: value})}
-            />
-            <Text danger transform="capitalize">
-              {updateForm.phoneNumber && !isValid.phoneNumber
-                ? t('common.invalidPhoneNumber')
-                : ''}
-            </Text>
+            <Block paddingHorizontal={sizes.m}>
+              <Input
+                autoCapitalize="none"
+                marginBottom={sizes.m}
+                label={t('profileSettings.updateEmail')}
+                keyboardType="email-address"
+                placeholder={t('profileSettings.updateEmail')}
+                success={Boolean(updateForm.email && isValid.email)}
+                danger={Boolean(updateForm.email && !isValid.email)}
+                onChangeText={(value) => handleChange({email: value})}
+              />
+              <Text danger transform="capitalize">
+                {updateForm.email && !isValid.email
+                  ? t('common.invalidEmailAddress')
+                  : ''}
+              </Text>
 
-            <Input
-              autoCapitalize="none"
-              marginBottom={sizes.m}
-              label={t('profileSettings.updateEmail')}
-              keyboardType="email-address"
-              placeholder={t('profileSettings.updateEmail')}
-              success={Boolean(updateForm.email && isValid.email)}
-              danger={Boolean(updateForm.email && !isValid.email)}
-              onChangeText={(value) => handleChange({email: value})}
-            />
-            <Text danger transform="capitalize">
-              {updateForm.email && !isValid.email
-                ? t('common.invalidEmailAddress')
-                : ''}
-            </Text>
-
-            <Text h5 black transform="capitalize">
-              {t('profileSettings.changePassword')}
-            </Text>
-            <Input
-              secureTextEntry
-              autoCapitalize="none"
-              marginTop={sizes.sm}
-              marginBottom={sizes.m}
-              label={t('profileSettings.oldPassword')}
-              placeholder={t('profileSettings.oldPassword')}
-              danger={Boolean(
-                updateForm.newPassword && !updateForm.oldPassword,
-              )}
-              onChangeText={(value) => handleChange({oldPassword: value})}
-            />
-            <Text danger transform="capitalize">
-              {updateForm.newPassword && !updateForm.oldPassword
-                ? t('profileSettings.oldPasswordRequired')
-                : ''}
-            </Text>
-            <Input
-              autoCapitalize="none"
-              marginBottom={sizes.m}
-              label={t('profileSettings.newPassword')}
-              placeholder={t('profileSettings.newPassword')}
-              success={Boolean(updateForm.newPassword && isValid.newPassword)}
-              danger={Boolean(updateForm.newPassword && !isValid.newPassword)}
-              onChangeText={(value) => handleChange({newPassword: value})}
-            />
-            <Text danger transform="capitalize">
-              {updateForm.newPassword && !isValid.newPassword
-                ? t('common.invalidPassword')
-                : ''}
-            </Text>
+              <Text h5 black transform="capitalize">
+                {t('profileSettings.changePassword')}
+              </Text>
+              <Input
+                secureTextEntry
+                autoCapitalize="none"
+                marginTop={sizes.sm}
+                marginBottom={sizes.m}
+                label={t('profileSettings.oldPassword')}
+                placeholder={t('profileSettings.oldPassword')}
+                danger={Boolean(
+                  updateForm.newPassword && !updateForm.oldPassword,
+                )}
+                onChangeText={(value) => handleChange({oldPassword: value})}
+              />
+              <Text danger transform="capitalize">
+                {updateForm.newPassword && !updateForm.oldPassword
+                  ? t('profileSettings.oldPasswordRequired')
+                  : ''}
+              </Text>
+              <Input
+                autoCapitalize="none"
+                marginBottom={sizes.m}
+                label={t('profileSettings.newPassword')}
+                placeholder={t('profileSettings.newPassword')}
+                success={Boolean(updateForm.newPassword && isValid.newPassword)}
+                danger={Boolean(updateForm.newPassword && !isValid.newPassword)}
+                onChangeText={(value) => handleChange({newPassword: value})}
+              />
+              <Text danger transform="capitalize">
+                {updateForm.newPassword && !isValid.newPassword
+                  ? t('common.invalidPassword')
+                  : ''}
+              </Text>
+            </Block>
+            <Button
+              onPress={() => navigation.navigate('Profile')} // handle profile update
+              marginVertical={sizes.s}
+              marginHorizontal={sizes.sm}
+              gradient={gradients.primary}
+              disabled={Object.values(isValid).includes(false)}>
+              <Text bold white transform="uppercase">
+                {t('common.save')}
+              </Text>
+            </Button>
           </Block>
-          <Button
-            onPress={() => navigation.navigate('Profile')} // handle profile update
-            marginVertical={sizes.s}
-            marginHorizontal={sizes.sm}
-            gradient={gradients.primary}
-            disabled={Object.values(isValid).includes(false)}>
-            <Text bold white transform="uppercase">
-              {t('common.save')}
-            </Text>
-          </Button>
         </Block>
-      </Block>
+      </Image>
     </Block>
   );
 };

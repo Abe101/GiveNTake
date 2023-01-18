@@ -5,7 +5,7 @@ import {IRegistration} from '../screens/Register';
 
 const REGISTER_API_URL = `${API_URL}/auth/signup`;
 
-const registerUser = async (body: IRegistration) => {
+const registerUser = async (body: Partial<IRegistration>) => {
   const request = await axios.post(REGISTER_API_URL, body);
 
   return request.data;
