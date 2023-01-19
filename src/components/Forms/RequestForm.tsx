@@ -1,12 +1,6 @@
 import React, {useState, useEffect, useCallback, createRef} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {
-  Platform,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import {Platform, TextInput, TouchableOpacity, FlatList} from 'react-native';
 import {Chip} from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import {useToast} from 'react-native-toast-notifications';
@@ -52,7 +46,7 @@ export interface IPost {
   authorEmail: string;
 }
 
-const PublishForm = () => {
+const RequestForm = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const toaster = useToast();
@@ -208,7 +202,7 @@ const PublishForm = () => {
     <Block marginBottom={sizes.xxl}>
       <Block justify="center" row>
         <Text color={colors.text} h5>
-          {t('publish.formTitle')}
+          {t('request.formTitle')}
         </Text>
       </Block>
       <Block>
@@ -217,7 +211,7 @@ const PublishForm = () => {
           autoCorrect={false}
           marginTop={sizes.sm}
           color={colors.dark}
-          placeholder={t('publish.productName')}
+          placeholder={t('request.productName')}
           success={Boolean(formFields.prodName && isValid.prodName)}
           danger={Boolean(formFields.prodName && !isValid.prodName)}
           onChangeText={(value) => handleChange({prodName: value})}
@@ -230,7 +224,7 @@ const PublishForm = () => {
           autoCorrect={false}
           marginTop={sizes.sm}
           color={colors.dark}
-          placeholder={t('publish.productBrand')}
+          placeholder={t('request.productBrand')}
           success={Boolean(formFields.prodBrand && isValid.prodBrand)}
           danger={Boolean(formFields.prodBrand && !isValid.prodBrand)}
           onChangeText={(value) => handleChange({prodBrand: value})}
@@ -246,7 +240,7 @@ const PublishForm = () => {
           marginTop={sizes.sm}
           keyboardType="number-pad"
           color={colors.dark}
-          placeholder={t('publish.productQuantity')}
+          placeholder={t('request.productQuantity')}
           success={Boolean(formFields.prodQty && isValid.prodQty)}
           danger={Boolean(formFields.prodQty && !isValid.prodQty)}
           onChangeText={(value) => handleChange({prodQty: value})}
@@ -254,9 +248,9 @@ const PublishForm = () => {
         <Text danger>
           {formFields.prodQty && !isValid.prodQty
             ? isNaN(Number(formFields.prodQty))
-              ? t('publish.productQuantityErrorNaN')
+              ? t('request.productQuantityErrorNaN')
               : Number(formFields.prodQty) < 1
-              ? t('publish.productQuantityErrorLessThanOne')
+              ? t('request.productQuantityErrorLessThanOne')
               : t('common.required')
             : null}
         </Text>
@@ -266,7 +260,7 @@ const PublishForm = () => {
           marginTop={sizes.sm}
           color={colors.dark}
           multiline
-          placeholder={t('publish.description')}
+          placeholder={t('request.description')}
           success={Boolean(formFields.description && isValid.description)}
           danger={Boolean(formFields.description && !isValid.description)}
           onChangeText={(value) => handleChange({description: value})}
@@ -291,7 +285,7 @@ const PublishForm = () => {
               <Text white bold transform="uppercase" marginRight={sizes.sm}>
                 {formFields.category !== ''
                   ? formFields.category
-                  : t('publish.chooseCategory')}
+                  : t('request.chooseCategory')}
               </Text>
               <Image
                 source={assets.arrow}
@@ -324,9 +318,9 @@ const PublishForm = () => {
             ref={tagInputRef}
             autoCapitalize="none"
             autoCorrect={false}
-            label={`${t('publish.addTags')}\n(Press space bar to enter a tag)`}
+            label={`${t('request.addTags')}\n(Press space bar to enter a tag)`}
             color={colors.dark}
-            placeholder={t('publish.addTags')}
+            placeholder={t('request.addTags')}
             marginTop={sizes.s}
             value={tagInputValue}
             onChangeText={setTagInputValue}
@@ -370,7 +364,7 @@ const PublishForm = () => {
                 borderRadius: sizes.cardRadius,
               }}
               onPress={handleImageChange}>
-              <Text color={colors.text}>{t('publish.addPhoto')}</Text>
+              <Text color={colors.text}>{t('request.addPhoto')}</Text>
             </TouchableOpacity>
           )}
         </Block>
@@ -378,23 +372,14 @@ const PublishForm = () => {
           {...(Object.values(isValid).includes(false)
             ? {color: colors.gray}
             : {gradient: gradients.primary})}
-          row
           shadow={!isAndroid}
           marginVertical={sizes.sm}
+          isLoading={isProcessing}
           disabled={Object.values(isValid).includes(false) || isProcessing}
           onPress={handleSubmit}>
-          <>
-            {isProcessing && (
-              <ActivityIndicator
-                animating={isProcessing}
-                color={colors.secondary.toString()}
-                style={{marginRight: sizes.base}}
-              />
-            )}
-            <Text white bold transform="uppercase">
-              {t('publish.submitForm')}
-            </Text>
-          </>
+          <Text white bold transform="uppercase">
+            {t('request.submitForm')}
+          </Text>
         </Button>
       </Block>
       <Modal visible={isCategoryMenuOpen} onRequestClose={onCategoryMenuClose}>
@@ -422,4 +407,4 @@ const PublishForm = () => {
   );
 };
 
-export default PublishForm;
+export default RequestForm;

@@ -34,6 +34,7 @@ const SignIn = () => {
     password: '',
   });
   const {mutate, isSuccess, isError, isLoading, data, error} = useMutation({
+    mutationKey: ['user'],
     mutationFn: login,
   });
 
@@ -54,7 +55,7 @@ const SignIn = () => {
           JSON.stringify(data.data.access_token),
         );
 
-        toaster.show('Registration Successful!', {
+        toaster.show('Login Successful!', {
           type: 'success',
           placement: 'bottom',
           duration: 2000,
@@ -65,14 +66,12 @@ const SignIn = () => {
         }, 2000);
       } else if (isError) {
         /* @ts-ignore */
-        if (error.status === 404) {
-          toaster.show('User does not exist, did you mean to register?', {
-            type: 'danger',
-            placement: 'bottom',
-            duration: 3000,
-            animationType: 'slide-in',
-          });
-        }
+        toaster.show(error.response.data.message, {
+          type: 'danger',
+          placement: 'bottom',
+          duration: 3000,
+          animationType: 'slide-in',
+        });
       }
     }
   }, [
@@ -168,8 +167,9 @@ const SignIn = () => {
               <Button
                 onPress={handleSignIn}
                 marginVertical={sizes.s}
-                marginHorizontal={sizes.sm}
+                marginHorizontal={sizes.s}
                 gradient={gradients.primary}
+                isLoading={isLoading}
                 disabled={isLoading || Object.values(isValid).includes(false)}>
                 <Text bold white transform="uppercase">
                   {t('common.signin')}

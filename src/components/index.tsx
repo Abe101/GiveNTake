@@ -8,7 +8,7 @@ import Checkbox from './Checkbox';
 import Image from './Image';
 import Article from './Article';
 import Product from './Product';
-import PublishForm from './Forms/PublishForm';
+import RequestForm from './Forms/RequestForm';
 
 export {
   Block,
@@ -21,5 +21,5 @@ export {
   Article,
   Product,
   Modal,
-  PublishForm,
+  RequestForm,
 };

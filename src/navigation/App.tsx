@@ -5,12 +5,9 @@ import AppLoading from 'expo-app-loading';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {ToastProvider} from 'react-native-toast-notifications';
-import {QueryClientProvider, QueryClient} from '@tanstack/react-query';
 
 import Menu from './Menu';
-import {useData, ThemeProvider, TranslationProvider} from '../hooks';
-
-const client = new QueryClient();
+import {useData, ThemeProvider} from '../hooks';
 
 export default () => {
   const {isDark, theme, setTheme} = useData();
@@ -52,18 +49,14 @@ export default () => {
   };
 
   return (
-    <QueryClientProvider client={client}>
-      <TranslationProvider>
-        <ThemeProvider theme={theme} setTheme={setTheme}>
-          <PaperProvider>
-            <ToastProvider>
-              <NavigationContainer theme={navigationTheme}>
-                <Menu />
-              </NavigationContainer>
-            </ToastProvider>
-          </PaperProvider>
-        </ThemeProvider>
-      </TranslationProvider>
-    </QueryClientProvider>
+    <ThemeProvider theme={theme} setTheme={setTheme}>
+      <PaperProvider>
+        <ToastProvider>
+          <NavigationContainer theme={navigationTheme}>
+            <Menu />
+          </NavigationContainer>
+        </ToastProvider>
+      </PaperProvider>
+    </ThemeProvider>
   );
 };

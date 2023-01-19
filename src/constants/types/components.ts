@@ -436,6 +436,10 @@ export interface IButtonProps extends TouchableOpacityProps, ISpacing {
    */
   vibrateRepeat?: boolean | null;
   /**
+   * Renders a loading spinner before children if true
+   */
+  isLoading?: boolean;
+  /**
    * Renders Button content
    */
   children?: React.ReactNode;

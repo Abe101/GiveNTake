@@ -1,9 +1,9 @@
 import React from 'react';
 
-import {Block, PublishForm, Image} from '../components';
+import {Block, RequestForm, Image} from '../components';
 import {useTheme} from '../hooks';
 
-const Publish = () => {
+const Request = () => {
   const {sizes, assets} = useTheme();
 
   return (
@@ -19,7 +19,7 @@ const Publish = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingBottom: sizes.padding}}>
           <Block flex={0} padding={sizes.m} keyboard>
-            <PublishForm />
+            <RequestForm />
           </Block>
         </Block>
       </Image>
@@ -27,4 +27,4 @@ const Publish = () => {
   );
 };
 
-export default Publish;
+export default Request;

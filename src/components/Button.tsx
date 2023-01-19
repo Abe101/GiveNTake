@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {Ionicons} from '@expo/vector-icons';
@@ -56,7 +57,7 @@ const Button = ({
   justify,
   height,
   width,
-  row,
+  row = true,
   outlined,
   social,
   activeOpacity = 0.7,
@@ -67,6 +68,7 @@ const Button = ({
   top,
   bottom,
   haptic = true,
+  isLoading,
   vibrate,
   vibrateRepeat,
   onPress,
@@ -232,6 +234,13 @@ const Button = ({
           colors={gradient}
           start={start ?? [0, 1]}
           end={end ?? [1, 0]}>
+          {isLoading && (
+            <ActivityIndicator
+              animating={isLoading}
+              color={colors.secondary.toString()}
+              style={{marginRight: sizes.base}}
+            />
+          )}
           {children}
         </LinearGradient>
       </TouchableOpacity>
@@ -269,6 +278,13 @@ const Button = ({
       onPress={handlePress}
       {...props}
       style={buttonStyles}>
+      {isLoading && (
+        <ActivityIndicator
+          animating={isLoading}
+          color={colors.secondary.toString()}
+          style={{marginRight: sizes.base}}
+        />
+      )}
       {children}
     </TouchableOpacity>
   );

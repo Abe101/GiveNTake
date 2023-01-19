@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   useIsDrawerOpen,
   createDrawerNavigator,
@@ -80,14 +80,13 @@ const DrawerContent = (
     [navigation, setActive],
   );
 
-  // const handleWebLink = useCallback((url) => Linking.openURL(url), []);
-
   // screen list for Drawer menu
   const screens = [
     {name: t('screens.home'), to: 'Home', icon: assets.home},
     // {name: t('screens.components'), to: 'Components', icon: assets.components},
-    {name: t('screens.categories'), to: 'Categories', icon: assets.document},
-    {name: t('screens.publish'), to: 'Publish', icon: assets.pluscircle},
+    {name: t('screens.categories'), to: 'Categories', icon: assets.components},
+    {name: t('screens.request'), to: 'Request', icon: assets.pluscircle},
+    {name: t('screens.chat'), to: 'Chat', icon: assets.users},
     {name: t('screens.profile'), to: 'Profile', icon: assets.profile},
   ];
 
@@ -108,6 +107,7 @@ const DrawerContent = (
             color={colors.text}
             source={assets.logo}
             marginRight={sizes.sm}
+            resizeMode="contain"
           />
           <Block>
             <Text size={12} semibold>
@@ -158,9 +158,9 @@ const DrawerContent = (
             row
             justify="flex-start"
             onPress={() => {
-              AsyncStorage.removeItem('@access-token', () => {
-                handleNavigation('SignIn');
-              });
+              // AsyncStorage.removeItem('@access-token', () => {
+              // });
+              handleNavigation('SignIn');
             }}>
             <Block
               flex={0}
@@ -198,8 +198,10 @@ export default () => {
       <Drawer.Navigator
         drawerType="slide"
         overlayColor="transparent"
+        // eslint-disable-next-line react-native/no-inline-styles
         sceneContainerStyle={{backgroundColor: 'transparent'}}
         drawerContent={(props) => <DrawerContent {...props} />}
+        // eslint-disable-next-line react-native/no-inline-styles
         drawerStyle={{
           flex: 1,
           width: '60%',

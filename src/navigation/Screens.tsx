@@ -11,8 +11,9 @@ import {
   Register,
   SignIn,
   ProfileSettings,
-  Publish,
+  Request,
   PostDetails,
+  Chat,
 } from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
 
@@ -26,24 +27,32 @@ export default () => {
   async function checkForUser() {
     const token = await AsyncStorage.getItem('@access-token').then((value) => {
       if (value) {
-        return JSON.parse(value);
+        return true;
       } else {
-        return null;
+        return false;
       }
     });
 
     if (token) {
-      setInitalRoute('Home');
       return true;
     } else {
-      setInitalRoute('SignIn');
       return false;
     }
   }
 
   React.useEffect(() => {
-    (async () => await checkForUser())();
-    SplashScreen.hideAsync();
+    (async () =>
+      await checkForUser()
+        .then((userExists) => {
+          if (userExists) {
+            setInitalRoute('Home');
+          } else {
+            setInitalRoute('SignIn');
+          }
+        })
+        .finally(() => {
+          SplashScreen.hideAsync();
+        }))();
   }, []);
 
   return (
@@ -91,13 +100,15 @@ export default () => {
         options={{headerShown: false}}
       />
 
-      <Stack.Screen name="Publish" component={Publish} />
+      <Stack.Screen name="Request" component={Request} />
 
       <Stack.Screen
         name="PostDetails"
         component={PostDetails}
         options={{headerShown: false}}
       />
+
+      <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
   );
 };

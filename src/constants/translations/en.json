@@ -62,8 +62,7 @@
   },
   "app": {
     "name": "GT",
-    "fullname": "Give'n'Take",
-    "link": "creative-tim.com"
+    "fullname": "Give'n'Take"
   },
   "darkMode": "Dark Mode",
   "logout": "Log Out",
@@ -77,7 +76,8 @@
     "register": "Create account",
     "extra": "Extra - Automotive",
     "signin": "Sign In",
-    "publish": "Publish"
+    "request": "Request",
+    "chat": "Chat"
   },
   "navigation": {
     "home": "Home",
@@ -97,7 +97,7 @@
     "login": "Login",
     "extra": "Automotive",
     "shopping": "Shopping Cart",
-    "publish": "Publish"
+    "request": "Request"
   },
   "menu": {
     "started": "Getting Started",
@@ -133,7 +133,7 @@
     "newPassword": "New password",
     "oldPasswordRequired": "You need to enter old password in order to change it"
   },
-  "publish": {
+  "request": {
     "formTitle": "Post a new request",
     "productName": "Product Name",
     "productBrand": "Product Company/Brand",
@@ -158,6 +158,7 @@
     "createdAt": "Posted on",
     "chatNow": "Chat Now"
   },
+  "chat": {},
   "pro": {
     "title": "Soft UI PRO",
     "alert": "This feature is available in PRO version",

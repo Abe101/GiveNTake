@@ -44,6 +44,7 @@ const Register = () => {
     confirmPassword: '',
   });
   const {mutate, isSuccess, isLoading, isError, data, error} = useMutation({
+    mutationKey: ['user'],
     mutationFn: register,
   });
 
@@ -78,26 +79,16 @@ const Register = () => {
         }, 2000);
       } else if (isError) {
         /* @ts-ignore */
-        if (error.status === 409) {
-          toaster.show('Already registered, please use a different email', {
-            type: 'danger',
-            placement: 'bottom',
-            duration: 3000,
-            animationType: 'slide-in',
-          });
-          /* @ts-ignore */
-        } else if (error.status === 422) {
-          toaster.show('Password and confirm passwords do not match', {
-            type: 'danger',
-            placement: 'bottom',
-            duration: 3000,
-            animationType: 'slide-in',
-          });
-        }
+        toaster.show(error.response.data.message, {
+          type: 'danger',
+          placement: 'bottom',
+          duration: 3000,
+          animationType: 'slide-in',
+        });
       }
     }
   }, [
-    data.data.access_token,
+    data,
     error,
     isError,
     isSuccess,
@@ -240,8 +231,9 @@ const Register = () => {
               <Button
                 onPress={handleSignUp}
                 marginVertical={sizes.s}
-                marginHorizontal={sizes.sm}
+                marginHorizontal={sizes.s}
                 gradient={gradients.primary}
+                isLoading={isLoading}
                 disabled={isLoading || Object.values(isValid).includes(false)}>
                 <Text bold white transform="uppercase">
                   {t('common.signup')}

@@ -47,8 +47,8 @@ const Product = ({
           {title}
         </Text>
         <Text p marginBottom={sizes.s}>
-          {description.length > 50
-            ? `${description?.substring(0, 50)}...`
+          {description.length > 25
+            ? `${description?.substring(0, 25)}...`
             : description}
         </Text>
         <TouchableOpacity onPress={onLinkPress}>
