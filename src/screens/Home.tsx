@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useQueries} from '@tanstack/react-query';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, FlatList} from 'react-native';
 
 import {useDebounce, useTheme, useTranslation} from '../hooks/';
 import {Block, Image, Input, Product, Text} from '../components/';
@@ -13,7 +13,7 @@ const Home = () => {
   const {t} = useTranslation();
   const {assets, sizes, colors} = useTheme();
   const navigation = useNavigation();
-  const [allPosts, setAllPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState<any[]>([]);
   const [setPostId, setPostEmail] = usePostStore((state: PostState) => [
     state.setId,
     state.setEmail,
@@ -94,44 +94,50 @@ const Home = () => {
           scroll
           paddingHorizontal={sizes.padding}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: sizes.l}}>
-          <Block row wrap="wrap" justify="space-between" marginTop={sizes.sm}>
-            {debouncedSearchTerm !== '' ? (
-              searchPostsQuery.isFetching ? (
-                <Block flex={1} justify="center" align="center">
-                  <ActivityIndicator />
-                </Block>
-              ) : (
-                searchPostsQuery.data.data?.map((post: any, idx: number) => {
+          contentContainerStyle={{paddingBottom: sizes.xxl * 4}}>
+          {debouncedSearchTerm !== '' ? (
+            searchPostsQuery.isFetching ? (
+              <Block flex={1} justify="center" align="center">
+                <ActivityIndicator />
+              </Block>
+            ) : (
+              <FlatList
+                data={searchPostsQuery.data?.data}
+                keyExtractor={(post) => post._id}
+                renderItem={({item: post}) => {
                   return (
                     <Product
-                      key={`card-${post._id}`}
                       {...(post.productImage && {image: post.productImage})}
                       title={post.productName}
                       description={post.productDescription}
-                      type={idx % 3 === 0 ? 'horizontal' : 'vertical'}
+                      type={'horizontal'}
                       linkLabel="See details"
                       onLinkPress={() => onPostPress(post)}
                     />
                   );
-                })
-              )
-            ) : (
-              allPosts?.map((post: any, idx: number) => {
+                }}
+                showsVerticalScrollIndicator={false}
+              />
+            )
+          ) : (
+            <FlatList
+              data={allPosts}
+              keyExtractor={(post) => post?._id}
+              renderItem={({item: post}) => {
                 return (
                   <Product
-                    key={`card-${post._id}`}
                     {...(post.productImage && {image: post.productImage})}
                     title={post.productName}
                     description={post.productDescription}
-                    type={idx % 3 === 0 ? 'horizontal' : 'vertical'}
+                    type={'horizontal'}
                     linkLabel="See details"
                     onLinkPress={() => onPostPress(post)}
                   />
                 );
-              })
-            )}
-          </Block>
+              }}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </Block>
       </Image>
     </Block>
