@@ -2,11 +2,10 @@ import axios, {AxiosRequestConfig} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {API_URL} from '../constants/api';
-import {IPost} from '../components/Forms/RequestForm';
 
-const POST_RECEIVER_REQUEST_API = `${API_URL}/posts/addNew`;
+const UPDATE_PROFILE_API = `${API_URL}/user/me`;
 
-const uploadRecieverRequest = async (body: IPost) => {
+const updateProfile = async (body: any) => {
   const token = await AsyncStorage.getItem('@access-token').then((data) => {
     if (data) {
       return JSON.parse(data);
@@ -14,14 +13,12 @@ const uploadRecieverRequest = async (body: IPost) => {
   });
 
   const config: AxiosRequestConfig = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: {Authorization: `Bearer ${token}`},
   };
 
-  const request = await axios.post(POST_RECEIVER_REQUEST_API, body, config);
+  const request = await axios.put(UPDATE_PROFILE_API, body, config);
 
   return request.data;
 };
 
-export default uploadRecieverRequest;
+export default updateProfile;

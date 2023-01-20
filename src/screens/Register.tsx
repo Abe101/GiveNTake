@@ -59,7 +59,9 @@ const Register = () => {
     if (!Object.values(isValid).includes(false)) {
       const registerBody = {
         ...registration,
-        avatar: `https://api.dicebear.com/5.x/lorelei-neutral/svg?seed=${registration.name}`,
+        avatar: `https://api.dicebear.com/5.x/lorelei-neutral/svg?seed=${registration.name
+          .split(' ')
+          .join('')}`,
       };
       mutate(registerBody);
 

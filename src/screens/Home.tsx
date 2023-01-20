@@ -3,7 +3,12 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useQueries} from '@tanstack/react-query';
 import {ActivityIndicator, FlatList} from 'react-native';
 
-import {useDebounce, useTheme, useTranslation} from '../hooks/';
+import {
+  useDebounce,
+  useRefetchOnFocus,
+  useTheme,
+  useTranslation,
+} from '../hooks/';
 import {Block, Image, Input, Product, Text} from '../components/';
 import {getLatestPosts, searchPostsByName} from '../services';
 import {usePostStore} from '../store';
@@ -36,6 +41,7 @@ const Home = () => {
       },
     ],
   });
+  useRefetchOnFocus(postsQuery.refetch);
 
   useFocusEffect(
     useCallback(() => {

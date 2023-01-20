@@ -126,12 +126,12 @@
   },
   "profileSettings": {
     "title": "Profile settings",
-    "changePhoneNumber": "Change phone number",
-    "updateEmail": "Update email",
+    "general": "General",
+    "updatePhoto": "Update profile photo",
+    "updateAboutMe": "Update about me",
+    "updateAddress": "Update address",
     "changePassword": "Change password",
-    "oldPassword": "Old password",
-    "newPassword": "New password",
-    "oldPasswordRequired": "You need to enter old password in order to change it"
+    "newPassword": "New password"
   },
   "request": {
     "formTitle": "Post a new request",

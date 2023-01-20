@@ -112,6 +112,9 @@ export const ASSETS: ThemeAssets = {
   x5: require('../assets/images/x5.png'),
   gle: require('../assets/images/gle.png'),
   tesla: require('../assets/images/tesla.png'),
+
+  // misc
+  noImage: require('../assets/images/no-image-found.jpeg'),
 };
 
 export const FONTS: ThemeFonts = {

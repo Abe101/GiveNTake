@@ -5,9 +5,8 @@ import {useNavigation} from '@react-navigation/core';
 import {useQueries} from '@tanstack/react-query';
 
 import {Block, Button, Image, Text, Product} from '../components/';
-import {useTheme, useTranslation} from '../hooks/';
+import {useTheme, useTranslation, useRefetchOnFocus} from '../hooks/';
 import {getPostsByUser, getUserProfile} from '../services';
-import {IPost} from '../components/Forms/PublishForm';
 import {usePostStore} from '../store';
 import {PostState} from '../store/usePostStore';
 
@@ -15,8 +14,8 @@ const Profile = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const {assets, colors, sizes} = useTheme();
-  const [userDetails, setUserDetails] = useState({});
-  const [userPosts, setUserPosts] = useState<Array<Partial<IPost>>>([]);
+  const [userDetails, setUserDetails] = useState<any>({});
+  const [userPosts, setUserPosts] = useState<any[]>([]);
   const [userQuery, postsQuery] = useQueries({
     queries: [
       {
@@ -32,6 +31,8 @@ const Profile = () => {
       },
     ],
   });
+  useRefetchOnFocus(userQuery.refetch);
+  useRefetchOnFocus(postsQuery.refetch);
   const [setPostId, setAuthorEmail] = usePostStore((state: PostState) => [
     state.setId,
     state.setEmail,
@@ -98,22 +99,14 @@ const Profile = () => {
                 height={64}
                 marginBottom={sizes.sm}
                 source={{
-                  uri:
-                    /* @ts-ignore */
-                    userDetails?.avatar,
+                  uri: userDetails?.avatar,
                 }}
               />
               <Text h5 center color={colors.text}>
-                {
-                  /* @ts-ignore */
-                  userDetails?.name
-                }
+                {userDetails?.name}
               </Text>
               <Text p center color={colors.text}>
-                {
-                  /* @ts-ignore */
-                  userDetails?.email
-                }
+                {userDetails?.email}
               </Text>
             </Block>
           </Image>
@@ -124,10 +117,9 @@ const Profile = () => {
               {t('profile.aboutMe')}
             </Text>
             <Text p lineHeight={26}>
-              {
-                /* @ts-ignore */
-                userDetails?.about ?? 'No about me provided'
-              }
+              {userDetails?.about !== ''
+                ? userDetails?.about
+                : `This is ${userDetails?.name}`}
             </Text>
           </Block>
 
@@ -169,9 +161,7 @@ const Profile = () => {
                         type={'vertical'}
                         linkLabel="See details"
                         onLinkPress={() => {
-                          /* @ts-ignore */
                           setPostId(product._id);
-                          /* @ts-ignore */
                           setAuthorEmail(product.authorEmail);
 
                           navigation.navigate('PostDetails');

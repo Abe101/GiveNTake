@@ -1,37 +1,34 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/core';
+import {TouchableOpacity} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import {useMutation} from '@tanstack/react-query';
+import {useToast} from 'react-native-toast-notifications';
 
 import {Block, Text, Button, Image, Input} from '../components';
 import {useTheme, useTranslation} from '../hooks/';
-import * as regex from '../constants/regex';
+import {uploadToCloudinary} from '../utils';
+import {updateProfile} from '../services';
 
 interface IUpdateProfile {
-  phoneNumber: string;
-  oldPassword: string;
-  newPassword: string;
-  email: string;
-}
-
-interface IUpdateProfileValidation {
-  phoneNumber: boolean;
-  newPassword: boolean;
-  email: boolean;
+  avatar: ImagePicker.ImageInfo | null;
+  aboutMe: string;
+  address: string;
 }
 
 const ProfileSettings = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const toast = useToast();
   const {assets, colors, sizes, gradients} = useTheme();
   const [updateForm, setUpdateForm] = useState<IUpdateProfile>({
-    phoneNumber: '',
-    oldPassword: '',
-    newPassword: '',
-    email: '',
+    avatar: null,
+    aboutMe: '',
+    address: '',
   });
-  const [isValid, setIsValid] = useState<IUpdateProfileValidation>({
-    phoneNumber: false,
-    newPassword: false,
-    email: false,
+  const {mutate, isSuccess, isLoading, isError, error} = useMutation({
+    mutationKey: ['user'],
+    mutationFn: updateProfile,
   });
 
   const handleChange = useCallback(
@@ -41,14 +38,84 @@ const ProfileSettings = () => {
     [setUpdateForm],
   );
 
-  useEffect(() => {
-    setIsValid((state) => ({
-      ...state,
-      phoneNumber: regex.phoneNumber.test(updateForm.phoneNumber),
-      email: regex.email.test(updateForm.email),
-      newPassword: regex.password.test(updateForm.newPassword),
-    }));
-  }, [updateForm, setIsValid]);
+  const getFileName = (uri: string) => {
+    const uriSplit = uri.split('/');
+    const nameWithExt = uriSplit[uriSplit.length - 1];
+    const nameAndExtSplit = nameWithExt.split('.');
+
+    return nameAndExtSplit[0];
+  };
+
+  const handleImageChange = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: false,
+    });
+
+    if (!result.cancelled) {
+      setUpdateForm((prev) => ({
+        ...prev,
+        avatar: result,
+      }));
+    }
+  };
+
+  const handleSubmit = useCallback(async () => {
+    if (
+      updateForm.avatar === null &&
+      updateForm.aboutMe === '' &&
+      updateForm.address === ''
+    ) {
+      toast.show('Nothing to update', {
+        type: 'warning',
+        placement: 'bottom',
+        duration: 2000,
+        animationType: 'slide-in',
+      });
+      return;
+    }
+
+    const body: any = {
+      ...(updateForm.aboutMe !== '' && {about: updateForm.aboutMe}),
+      ...(updateForm.address !== '' && {address: updateForm.address}),
+    };
+
+    if (updateForm.avatar !== null) {
+      const uploadedImgData = await uploadToCloudinary({
+        uri: updateForm.avatar.uri,
+        type: updateForm.avatar.type,
+        name: getFileName(updateForm.avatar.uri),
+      });
+
+      const uploadedImgUrl = uploadedImgData.secure_url;
+      body.avatar = uploadedImgUrl;
+    }
+
+    mutate(body);
+
+    if (isSuccess) {
+      toast.show('Profile updated!', {
+        type: 'success',
+        placement: 'bottom',
+        duration: 2000,
+        animationType: 'slide-in',
+      });
+      setTimeout(() => {
+        navigation.navigate('Profile');
+      }, 1000);
+    } else if (isError) {
+      /* @ts-ignore */
+      toast.show(error?.response?.message, {
+        type: 'error',
+        placement: 'bottom',
+        duration: 2000,
+        animationType: 'slide-in',
+      });
+    }
+  }, [updateForm, mutate, isSuccess, isError, toast, navigation, error]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -84,64 +151,69 @@ const ProfileSettings = () => {
               </Text>
             </Button>
 
-            <Block paddingHorizontal={sizes.m}>
-              <Input
-                autoCapitalize="none"
-                marginBottom={sizes.m}
-                label={t('profileSettings.updateEmail')}
-                keyboardType="email-address"
-                placeholder={t('profileSettings.updateEmail')}
-                success={Boolean(updateForm.email && isValid.email)}
-                danger={Boolean(updateForm.email && !isValid.email)}
-                onChangeText={(value) => handleChange({email: value})}
-              />
-              <Text danger transform="capitalize">
-                {updateForm.email && !isValid.email
-                  ? t('common.invalidEmailAddress')
-                  : ''}
-              </Text>
-
-              <Text h5 black transform="capitalize">
-                {t('profileSettings.changePassword')}
-              </Text>
-              <Input
-                secureTextEntry
-                autoCapitalize="none"
-                marginTop={sizes.sm}
-                marginBottom={sizes.m}
-                label={t('profileSettings.oldPassword')}
-                placeholder={t('profileSettings.oldPassword')}
-                danger={Boolean(
-                  updateForm.newPassword && !updateForm.oldPassword,
-                )}
-                onChangeText={(value) => handleChange({oldPassword: value})}
-              />
-              <Text danger transform="capitalize">
-                {updateForm.newPassword && !updateForm.oldPassword
-                  ? t('profileSettings.oldPasswordRequired')
-                  : ''}
-              </Text>
-              <Input
-                autoCapitalize="none"
-                marginBottom={sizes.m}
-                label={t('profileSettings.newPassword')}
-                placeholder={t('profileSettings.newPassword')}
-                success={Boolean(updateForm.newPassword && isValid.newPassword)}
-                danger={Boolean(updateForm.newPassword && !isValid.newPassword)}
-                onChangeText={(value) => handleChange({newPassword: value})}
-              />
-              <Text danger transform="capitalize">
-                {updateForm.newPassword && !isValid.newPassword
-                  ? t('common.invalidPassword')
-                  : ''}
-              </Text>
+            <Block keyboard paddingHorizontal={sizes.m}>
+              <Block>
+                <Text h5 black transform="capitalize">
+                  {t('profileSettings.general')}
+                </Text>
+                <Block row justify="center" marginVertical={sizes.sm}>
+                  {updateForm.avatar ? (
+                    <TouchableOpacity onPress={handleImageChange}>
+                      <Image
+                        source={{uri: updateForm.avatar.uri}}
+                        /* @ts-ignore */
+                        height={sizes.avatarSize * 4}
+                        width={sizes.avatarSize * 4}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      // eslint-disable-next-line react-native/no-inline-styles
+                      style={{
+                        height: sizes.avatarSize * 4,
+                        width: sizes.avatarSize * 4,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderWidth: 1,
+                        borderColor: colors.dark,
+                        borderRadius: sizes.avatarRadius,
+                      }}
+                      onPress={handleImageChange}>
+                      <Text color={colors.text} align="center">
+                        {t('profileSettings.updatePhoto')}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </Block>
+                <Block>
+                  <Input
+                    autoCapitalize="none"
+                    marginTop={sizes.sm}
+                    marginBottom={sizes.sm}
+                    multiline
+                    label={t('profileSettings.updateAboutMe')}
+                    placeholder={t('profileSettings.updateAboutMe')}
+                    onChangeText={(value) => handleChange({aboutMe: value})}
+                  />
+                  <Input
+                    autoCapitalize="none"
+                    marginTop={sizes.sm}
+                    marginBottom={sizes.sm}
+                    multiline
+                    label={t('profileSettings.updateAddress')}
+                    placeholder={t('profileSettings.updateAddress')}
+                    onChangeText={(value) => handleChange({address: value})}
+                  />
+                </Block>
+              </Block>
             </Block>
             <Button
-              onPress={() => navigation.navigate('Profile')} // handle profile update
+              onPress={handleSubmit} // handle profile update
               marginVertical={sizes.s}
               marginHorizontal={sizes.sm}
-              gradient={gradients.primary}
-              disabled={Object.values(isValid).includes(false)}>
+              isLoading={isLoading}
+              gradient={gradients.primary}>
               <Text bold white transform="uppercase">
                 {t('common.save')}
               </Text>

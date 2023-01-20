@@ -28,16 +28,15 @@ const Product = ({
       row={isHorizontal}
       marginBottom={sizes.sm}
       width={isHorizontal ? CARD_WIDTH * 2 + sizes.sm : CARD_WIDTH}>
-      {image && (
-        <Image
-          resizeMode="cover"
-          source={{uri: image}}
-          style={{
-            height: isHorizontal ? 114 : 110,
-            width: !isHorizontal ? '100%' : sizes.width / 2.435,
-          }}
-        />
-      )}
+      <Image
+        resizeMode="cover"
+        source={image ? {uri: image} : assets.noImage}
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          height: isHorizontal ? 114 : 110,
+          width: !isHorizontal ? '100%' : sizes.width / 2.435,
+        }}
+      />
       <Block
         paddingTop={sizes.s}
         justify="space-between"

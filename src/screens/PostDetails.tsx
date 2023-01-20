@@ -9,7 +9,7 @@ import {useTheme, useTranslation} from '../hooks';
 import {usePostStore} from '../store';
 import {getPostById} from '../services';
 import {PostState} from '../store/usePostStore';
-import {IPost} from '../components/Forms/PublishForm';
+import {IPost} from '../components/Forms/RequestForm';
 
 const PostDetails = () => {
   const navigation = useNavigation();
@@ -80,23 +80,17 @@ const PostDetails = () => {
               </Text>
             </Button>
 
-            {postDetails.productImage !== '' ? (
-              <Image
-                source={{uri: postDetails.productImage}}
-                resizeMode="contain"
-                /* @ts-ignore */
-                height={240}
-              />
-            ) : (
-              <Image
-                source={{
-                  uri: 'https://dummyimage.com/600x400/e9ecef/091c4c&text=No+Image',
-                }}
-                resizeMode="contain"
-                /* @ts-ignore */
-                height={240}
-              />
-            )}
+            <Image
+              source={
+                postDetails?.productImage
+                  ? {uri: postDetails.productImage}
+                  : assets.noImage
+              }
+              resizeMode={postDetails?.productImage ? 'contain' : 'cover'}
+              /* @ts-ignore */
+              height={240}
+              {...(!postDetails?.productImage && {width: sizes.width / 1.1})}
+            />
 
             <Block marginVertical={sizes.s}>
               <Text h5 gradient={gradients.primary}>

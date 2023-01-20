@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList} from 'react-native';
+import {FlatList, RefreshControl, ActivityIndicator} from 'react-native';
 import {useQueries} from '@tanstack/react-query';
 
 import {useTheme} from '../hooks/';
@@ -44,7 +44,7 @@ const Categories = () => {
   const listEmpty = (category: string) => {
     return (
       <Block flex={0} justify="center" align="center">
-        <Text>No posts found for {category}</Text>
+        <Text>No requests found for {category}</Text>
       </Block>
     );
   };
@@ -87,33 +87,44 @@ const Categories = () => {
         </Block>
       </Block>
 
-      {postsByCategoryQuery.isSuccess && (
-        <FlatList
-          data={postsByCategoryQuery.data?.data}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(_, idx) => idx.toString()}
-          style={{paddingHorizontal: sizes.padding}}
-          contentContainerStyle={{paddingBottom: sizes.l}}
-          ListEmptyComponent={listEmpty(selected)}
-          renderItem={({item}) => {
-            const articleProps = {
-              title: item.productName,
-              description: item.productDescription,
-              ...(item.productImage && {image: item.productImage}),
-              category: item.category,
-              timestamp: item.createdAt,
-              onPress: () => {
-                setPostId(item._id);
-                setAuthorEmail(item.authorEmail);
-
-                navigation.navigate('PostDetails');
-              },
-            };
-
-            return <Article {...articleProps} />;
-          }}
-        />
+      {postsByCategoryQuery.isLoading && (
+        <Block flex={1} justify="center" align="center">
+          <ActivityIndicator />
+        </Block>
       )}
+      <FlatList
+        data={postsByCategoryQuery.data?.data}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(_, idx) => idx.toString()}
+        style={{paddingHorizontal: sizes.padding}}
+        contentContainerStyle={{paddingBottom: sizes.l}}
+        ListEmptyComponent={
+          !postsByCategoryQuery.isFetching ? listEmpty(selected) : null
+        }
+        renderItem={({item}) => {
+          const articleProps = {
+            title: item.productName,
+            description: item.productDescription,
+            ...(item.productImage && {image: item.productImage}),
+            category: item.category,
+            timestamp: item.createdAt,
+            onPress: () => {
+              setPostId(item._id);
+              setAuthorEmail(item.authorEmail);
+
+              navigation.navigate('PostDetails');
+            },
+          };
+
+          return <Article {...articleProps} />;
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={postsByCategoryQuery.isRefetching}
+            onRefresh={postsByCategoryQuery.refetch}
+          />
+        }
+      />
     </Block>
   );
 };

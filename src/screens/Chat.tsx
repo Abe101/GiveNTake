@@ -8,15 +8,11 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('Socket Conneected');
-    });
-    socket.on('getChatMessagesByRoomId', (data) => {
-      console.log(JSON.stringify(data, null, 2));
+      console.log('Socket Connected');
     });
 
     return () => {
       socket.off('connect');
-      socket.off('getChatMessagesByRoomId');
     };
   }, [socket]);
 

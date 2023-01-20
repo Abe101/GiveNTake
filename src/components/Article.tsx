@@ -17,7 +17,7 @@ const Article = ({
   onPress,
 }: IArticle) => {
   const {t} = useTranslation();
-  const {gradients, sizes, colors} = useTheme();
+  const {gradients, sizes, colors, assets} = useTheme();
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -29,8 +29,9 @@ const Article = ({
         <Image
           /* @ts-ignore */
           height={170}
+          {...(!image && {width: sizes.width / 1.25})}
           resizeMode="cover"
-          source={{uri: image}}
+          source={image ? {uri: image} : assets.noImage}
         />
         <Text h4 marginTop={sizes.sm}>
           {title}
