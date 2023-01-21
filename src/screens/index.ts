@@ -8,3 +8,4 @@ export {default as ProfileSettings} from './ProfileSettings';
 export {default as Request} from './Request';
 export {default as PostDetails} from './PostDetails';
 export {default as Chat} from './Chat';
+export {default as Chats} from './Chats';

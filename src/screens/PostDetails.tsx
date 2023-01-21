@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {useQuery} from '@tanstack/react-query';
+import {useQueries} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 
 import {Block, Text, Image, Button} from '../components';
 import {useTheme, useTranslation} from '../hooks';
 import {usePostStore} from '../store';
-import {getPostById} from '../services';
+import {getPostById, getUserProfile} from '../services';
 import {PostState} from '../store/usePostStore';
 import {IPost} from '../components/Forms/RequestForm';
 
@@ -15,10 +15,25 @@ const PostDetails = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const {sizes, assets, colors, gradients} = useTheme();
-  const [postId] = usePostStore((state: PostState) => [state.id]);
-  const postQuery = useQuery({
-    queryKey: ['posts', postId],
-    queryFn: () => getPostById(postId),
+  const [postId, setProductTitle, setRecipient, setSender] = usePostStore(
+    (state: PostState) => [
+      state.id,
+      state.setProductTitle,
+      state.setRecipient,
+      state.setSender,
+    ],
+  );
+  const [postQuery, userQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['posts', postId],
+        queryFn: () => getPostById(postId),
+      },
+      {
+        queryKey: ['user'],
+        queryFn: getUserProfile,
+      },
+    ],
   });
   const [postDetails, setPostDetails] = useState<IPost>({
     authorEmail: '',
@@ -30,7 +45,7 @@ const PostDetails = () => {
     productImage: '',
     tags: [],
   });
-  const [userDetails, setUserDetails] = useState({});
+  const [userDetails, setUserDetails] = useState<any>({});
 
   useEffect(() => {
     if (postQuery.isSuccess) {
@@ -46,6 +61,16 @@ const PostDetails = () => {
       </Block>
     );
   }
+
+  const onChatNow = async () => {
+    setProductTitle(postDetails.productName);
+
+    setRecipient(userDetails._id);
+
+    setSender(userQuery.data.data._id);
+
+    navigation.navigate('Chat');
+  };
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -186,7 +211,8 @@ const PostDetails = () => {
                     bold
                     margin={sizes.s}
                     transform="uppercase"
-                    color={colors.primary}>
+                    color={colors.primary}
+                    onPress={onChatNow}>
                     {t('postDetails.chatNow')}
                   </Text>
                 </Button>

@@ -9,6 +9,7 @@ import Image from './Image';
 import Article from './Article';
 import Product from './Product';
 import RequestForm from './Forms/RequestForm';
+import ChatBox from './ChatBox';
 
 export {
   Block,
@@ -22,4 +23,5 @@ export {
   Product,
   Modal,
   RequestForm,
+  ChatBox,
 };

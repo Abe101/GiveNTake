@@ -10,3 +10,5 @@ export {default as getUserByEmail} from './getUserByEmail';
 export {default as getPostsByUser} from './getPostsByUser';
 export {default as searchPostsByName} from './searchPostsByName';
 export {default as updateProfile} from './updateProfile';
+export {default as getMyChats} from './getMyChats';
+export {default as getUserById} from './getUserById';

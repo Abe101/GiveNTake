@@ -136,3 +136,9 @@ export interface INotification {
     | 'extras'
     | 'office';
 }
+
+export interface IChatBox {
+  recipientId: string;
+  lastMessage: string;
+  onPress: () => void;
+}

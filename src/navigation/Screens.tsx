@@ -14,6 +14,7 @@ import {
   Request,
   PostDetails,
   Chat,
+  Chats,
 } from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
 
@@ -109,6 +110,8 @@ export default () => {
       />
 
       <Stack.Screen name="Chat" component={Chat} />
+
+      <Stack.Screen name="Chats" component={Chats} />
     </Stack.Navigator>
   );
 };

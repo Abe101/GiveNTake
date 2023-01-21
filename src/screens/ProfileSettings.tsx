@@ -164,7 +164,7 @@ const ProfileSettings = () => {
                         /* @ts-ignore */
                         height={sizes.avatarSize * 4}
                         width={sizes.avatarSize * 4}
-                        resizeMode="contain"
+                        resizeMode="cover"
                       />
                     </TouchableOpacity>
                   ) : (
