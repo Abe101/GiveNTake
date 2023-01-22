@@ -63,7 +63,7 @@ const SignIn = () => {
         });
         setTimeout(() => {
           navigation.replace('Home');
-        }, 2000);
+        }, 1000);
       } else if (isError) {
         /* @ts-ignore */
         toaster.show(error.response.data.message, {

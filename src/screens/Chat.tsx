@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
+import {GiftedChat, IMessage} from 'react-native-gifted-chat';
+import {Platform, KeyboardAvoidingView} from 'react-native';
+import {useQuery} from '@tanstack/react-query';
 
 import {Block, Text} from '../components';
-import {usePostStore} from '../store';
-import {PostState} from '../store/usePostStore';
+import {useChatStore} from '../store';
 import {
   createNewChatMessage,
   getChatMessagesByRoomId,
@@ -10,26 +12,79 @@ import {
   newChatMessage,
   roomId,
 } from '../constants/chatEvents';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {io} from 'socket.io-client';
 import {BASE} from '../constants/api';
+import {getUserProfile} from '../services';
 
 const Chat = () => {
   const socket = io(BASE);
 
-  const [productTitle, recipient, sender, stateRoomId, setRoomId] =
-    usePostStore((state: PostState) => [
-      state.productTitle,
-      state.recipient,
-      state.sender,
-      state.roomId,
-      state.setRoomId,
-    ]);
+  const {
+    productTitle,
+    recipientId,
+    senderId,
+    roomId: stateRoomId,
+    setRoomId,
+  } = useChatStore();
 
+  const userQuery = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserProfile,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isConnected, setIsConnected] = useState(socket.connected);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [lastPong, setLastPong] = useState<string | null>(null);
 
-  const [olderMessages, setOlderMessages] = useState<any>(null);
+  const [olderMessages, setOlderMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+
+  const getChatMessages = () => {
+    socket.emit(
+      getChatMessagesByRoomId,
+      {roomId: stateRoomId},
+      (payloadOldMessages: any) => {
+        // console.log('ACKNOWLEDGe', payloadOldMessages);
+        console.log(
+          'messagesMapped',
+          payloadOldMessages.map((msg: any) => {
+            const giftedMsg: IMessage = {
+              _id: msg._id,
+              text: msg.message,
+              createdAt: msg.createdAt,
+              user: {
+                _id: msg.sender,
+                // name: senderQuery.data.data.name,
+                // avatar: senderQuery.data.data.avatar,
+              },
+            };
+
+            return giftedMsg;
+          }),
+        );
+        setOlderMessages(
+          GiftedChat.append(
+            [],
+            payloadOldMessages.map((msg: any) => {
+              const giftedMsg: IMessage = {
+                _id: msg._id,
+                text: msg.message,
+                createdAt: msg.createdAt,
+                user: {
+                  _id: msg.sender,
+                  // name: senderQuery.data.data.name,
+                  // avatar: senderQuery.data.data.avatar,
+                },
+              };
+
+              return giftedMsg;
+            }),
+          ),
+        );
+      },
+    );
+  };
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -38,8 +93,8 @@ const Chat = () => {
       socket.emit(
         getRoomIdByUserIdsAndProduct,
         {
-          recipient,
-          sender,
+          recipient: recipientId,
+          sender: senderId,
           productTitle,
         },
         (response: any) => {
@@ -53,18 +108,13 @@ const Chat = () => {
 
       console.log('ROOM ID', payload);
 
-      socket.emit(
-        getChatMessagesByRoomId,
-        {roomId: stateRoomId},
-        (payloadOldMessages: any) => {
-          console.log('ACKNOWLEDGe', payloadOldMessages);
-          setOlderMessages(payloadOldMessages);
-        },
-      );
+      getChatMessages();
     });
 
     socket.on(newChatMessage, (payload) => {
       console.log('New Chat message', payload);
+
+      getChatMessages();
     });
 
     socket.on('disconnect', () => {
@@ -80,35 +130,56 @@ const Chat = () => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('pong');
+      socket.off(newChatMessage);
+      socket.off(getChatMessagesByRoomId);
+      socket.off(getRoomIdByUserIdsAndProduct);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sendMessage = () => {
+    if (newMessage.trim() === '') {
+      return;
+    }
+
+    // console.log('sent', newMessage);
+
     socket.emit(
       createNewChatMessage,
       {
-        sender,
-        recipient,
+        sender: userQuery.data?.data._id,
+        recipient:
+          recipientId === userQuery.data?.data._id ? senderId : recipientId,
         roomId: stateRoomId,
-        message: 'HElllooo!',
+        message: newMessage,
         productTitle,
       },
-      (response: any) => {
-        console.log('MESSAGE', response);
+      () => {
+        getChatMessages();
       },
     );
   };
 
   return (
-    <Block safe>
-      <Text>Chat</Text>
-      <Text>CONNECTED: {isConnected}</Text>
-      <Text>LAST PONG:{lastPong}</Text>
-
-      <TouchableOpacity onPress={sendMessage}>
-        <Text>Hellloo!</Text>
-      </TouchableOpacity>
+    <Block>
+      <Text h5 bold center>
+        {productTitle}
+      </Text>
+      <GiftedChat
+        messages={olderMessages}
+        user={{
+          _id: userQuery.data?.data._id,
+          name: userQuery.data?.data.name,
+          avatar: userQuery.data?.data.avatar,
+        }}
+        text={newMessage}
+        onInputTextChanged={setNewMessage}
+        onSend={sendMessage}
+        isKeyboardInternallyHandled={false}
+        scrollToBottom
+        inverted={false}
+      />
+      {Platform.OS === 'android' && <KeyboardAvoidingView behavior="height" />}
     </Block>
   );
 };

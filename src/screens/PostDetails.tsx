@@ -1,28 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {useQueries} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 
 import {Block, Text, Image, Button} from '../components';
 import {useTheme, useTranslation} from '../hooks';
-import {usePostStore} from '../store';
+import {useChatStore, usePostStore} from '../store';
 import {getPostById, getUserProfile} from '../services';
 import {PostState} from '../store/usePostStore';
 import {IPost} from '../components/Forms/RequestForm';
+
+const isAndroid = Platform.OS === 'android';
 
 const PostDetails = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const {sizes, assets, colors, gradients} = useTheme();
-  const [postId, setProductTitle, setRecipient, setSender] = usePostStore(
-    (state: PostState) => [
-      state.id,
-      state.setProductTitle,
-      state.setRecipient,
-      state.setSender,
-    ],
-  );
+  const [postId] = usePostStore((state: PostState) => [state.id]);
+  const {setProductTitle, setRecipientId, setSenderId} = useChatStore();
   const [postQuery, userQuery] = useQueries({
     queries: [
       {
@@ -64,10 +60,8 @@ const PostDetails = () => {
 
   const onChatNow = async () => {
     setProductTitle(postDetails.productName);
-
-    setRecipient(userDetails._id);
-
-    setSender(userQuery.data.data._id);
+    setRecipientId(userDetails._id);
+    setSenderId(userQuery.data.data._id);
 
     navigation.navigate('Chat');
   };
@@ -205,7 +199,12 @@ const PostDetails = () => {
                     )
                   }
                 </Block>
-                <Button flex={0} outlined primary paddingHorizontal={sizes.sm}>
+                <Button
+                  shadow={!isAndroid}
+                  flex={0}
+                  outlined
+                  primary
+                  paddingHorizontal={sizes.sm}>
                   <Text
                     p
                     bold

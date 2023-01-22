@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, ActivityIndicator} from 'react-native';
+import {TouchableWithoutFeedback, ActivityIndicator} from 'react-native';
 import {useQuery} from '@tanstack/react-query';
 
 import Block from './Block';
@@ -32,12 +32,12 @@ const ChatBox = ({recipientId, lastMessage, onPress}: IChatBox) => {
   }
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableWithoutFeedback onPress={onPress}>
       <Block
         card
         flex={0}
         row
-        marginVertical={sizes.sm}
+        marginBottom={sizes.s}
         width={CARD_WIDTH}
         marginHorizontal={sizes.sm}>
         <Image
@@ -55,11 +55,13 @@ const ChatBox = ({recipientId, lastMessage, onPress}: IChatBox) => {
             {recipientQuery.data?.data?.name}
           </Text>
           <Text p marginBottom={sizes.s}>
-            {lastMessage}
+            {lastMessage.length > 50
+              ? `${lastMessage.substring(0, 50)}...`
+              : lastMessage}
           </Text>
         </Block>
       </Block>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

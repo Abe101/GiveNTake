@@ -69,6 +69,7 @@ export const ICONS: ThemeIcons = {
   warning: require('../assets/icons/warning.png'),
   pluscircle: require('../assets/icons/pluscircle.png'),
   exit: require('../assets/icons/logout.png'),
+  send: require('../assets/icons/send.png'),
 };
 
 export const ASSETS: ThemeAssets = {

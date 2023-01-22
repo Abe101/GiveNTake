@@ -89,8 +89,9 @@ const ProfileSettings = () => {
         type: updateForm.avatar.type,
         name: getFileName(updateForm.avatar.uri),
       });
+      console.log(uploadedImgData);
 
-      const uploadedImgUrl = uploadedImgData.secure_url;
+      const uploadedImgUrl = uploadedImgData?.secure_url;
       body.avatar = uploadedImgUrl;
     }
 

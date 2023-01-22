@@ -4,13 +4,14 @@ import {FlatList, RefreshControl} from 'react-native';
 import {useQuery} from '@tanstack/react-query';
 
 import {Block, ChatBox, Text} from '../components';
-import {useTranslation} from '../hooks';
+import {useTranslation, useTheme} from '../hooks';
 import {getMyChats} from '../services';
 import {useChatStore} from '../store';
 
 const Chats = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
+  const {sizes} = useTheme();
   const chatsQuery = useQuery({
     queryKey: ['chats'],
     queryFn: getMyChats,
@@ -19,7 +20,7 @@ const Chats = () => {
     useChatStore();
 
   const ListEmptyComp = () => {
-    return <Text>{t('chats.noChats')}</Text>;
+    return <Text marginHorizontal={sizes.sm}>{t('chats.noChats')}</Text>;
   };
 
   return (

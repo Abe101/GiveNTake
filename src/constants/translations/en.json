@@ -149,7 +149,7 @@
     "submitForm": "Post"
   },
   "postDetails": {
-    "title": "Post Details",
+    "title": "Request Details",
     "name": "Name",
     "company": "Company",
     "description": "Description",
