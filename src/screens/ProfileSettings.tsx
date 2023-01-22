@@ -26,10 +26,11 @@ const ProfileSettings = () => {
     aboutMe: '',
     address: '',
   });
-  const {mutate, isSuccess, isLoading, isError, error} = useMutation({
+  const {mutateAsync, error} = useMutation({
     mutationKey: ['user'],
     mutationFn: updateProfile,
   });
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleChange = useCallback(
     (value) => {
@@ -77,6 +78,7 @@ const ProfileSettings = () => {
       });
       return;
     }
+    setIsProcessing(true);
 
     const body: any = {
       ...(updateForm.aboutMe !== '' && {about: updateForm.aboutMe}),
@@ -95,19 +97,20 @@ const ProfileSettings = () => {
       body.avatar = uploadedImgUrl;
     }
 
-    mutate(body);
+    try {
+      await mutateAsync(body);
 
-    if (isSuccess) {
       toast.show('Profile updated!', {
         type: 'success',
         placement: 'bottom',
         duration: 2000,
         animationType: 'slide-in',
       });
+      setIsProcessing(false);
       setTimeout(() => {
         navigation.navigate('Profile');
       }, 1000);
-    } else if (isError) {
+    } catch {
       /* @ts-ignore */
       toast.show(error?.response?.message, {
         type: 'error',
@@ -116,7 +119,7 @@ const ProfileSettings = () => {
         animationType: 'slide-in',
       });
     }
-  }, [updateForm, mutate, isSuccess, isError, toast, navigation, error]);
+  }, [updateForm, toast, mutateAsync, navigation, error]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -190,6 +193,7 @@ const ProfileSettings = () => {
                 <Block>
                   <Input
                     autoCapitalize="none"
+                    autoCorrect={false}
                     marginTop={sizes.sm}
                     marginBottom={sizes.sm}
                     multiline
@@ -199,6 +203,7 @@ const ProfileSettings = () => {
                   />
                   <Input
                     autoCapitalize="none"
+                    autoCorrect={false}
                     marginTop={sizes.sm}
                     marginBottom={sizes.sm}
                     multiline
@@ -213,7 +218,7 @@ const ProfileSettings = () => {
               onPress={handleSubmit} // handle profile update
               marginVertical={sizes.s}
               marginHorizontal={sizes.sm}
-              isLoading={isLoading}
+              isLoading={isProcessing}
               gradient={gradients.primary}>
               <Text bold white transform="uppercase">
                 {t('common.save')}

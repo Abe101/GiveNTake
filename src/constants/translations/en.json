@@ -124,7 +124,8 @@
     "posts": "Posts",
     "followers": "Followers",
     "following": "Following",
-    "aboutMe": "About me"
+    "aboutMe": "About me",
+    "address": "Address"
   },
   "profileSettings": {
     "title": "Profile settings",

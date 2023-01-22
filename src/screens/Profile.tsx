@@ -111,9 +111,21 @@ const Profile = () => {
             </Block>
           </Image>
 
-          {/* profile: about me */}
+          {/* profile: address */}
           <Block paddingHorizontal={sizes.sm}>
             <Text h5 semibold marginBottom={sizes.s} marginTop={sizes.sm}>
+              {t('profile.address')}
+            </Text>
+            <Text p lineHeight={26}>
+              {userDetails?.address !== ''
+                ? userDetails?.address
+                : 'No address provided'}
+            </Text>
+          </Block>
+
+          {/* profile: about me */}
+          <Block paddingHorizontal={sizes.sm}>
+            <Text h5 semibold marginBottom={sizes.s} marginTop={sizes.s}>
               {t('profile.aboutMe')}
             </Text>
             <Text p lineHeight={26}>

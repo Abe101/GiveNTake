@@ -33,7 +33,8 @@ const SignIn = () => {
     identifier: '',
     password: '',
   });
-  const {mutate, isSuccess, isError, isLoading, data, error} = useMutation({
+  const [isProcessing, setIsProcessing] = useState(false);
+  const {mutateAsync, data, error} = useMutation({
     mutationKey: ['user'],
     mutationFn: login,
   });
@@ -47,9 +48,11 @@ const SignIn = () => {
 
   const handleSignIn = useCallback(async () => {
     if (!Object.values(isValid).includes(false)) {
-      mutate(signInFields);
+      setIsProcessing(true);
 
-      if (isSuccess) {
+      try {
+        await mutateAsync(signInFields);
+
         await AsyncStorage.setItem(
           '@access-token',
           JSON.stringify(data.data.access_token),
@@ -61,10 +64,12 @@ const SignIn = () => {
           duration: 2000,
           animationType: 'slide-in',
         });
+        setIsProcessing(false);
         setTimeout(() => {
           navigation.replace('Home');
         }, 1000);
-      } else if (isError) {
+      } catch {
+        setIsProcessing(false);
         /* @ts-ignore */
         toaster.show(error.response.data.message, {
           type: 'danger',
@@ -74,17 +79,7 @@ const SignIn = () => {
         });
       }
     }
-  }, [
-    data,
-    error,
-    isError,
-    isSuccess,
-    isValid,
-    mutate,
-    navigation,
-    signInFields,
-    toaster,
-  ]);
+  }, [data, error, isValid, mutateAsync, navigation, signInFields, toaster]);
 
   useEffect(() => {
     setIsValid((state) => ({
@@ -169,8 +164,10 @@ const SignIn = () => {
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.s}
                 gradient={gradients.primary}
-                isLoading={isLoading}
-                disabled={isLoading || Object.values(isValid).includes(false)}>
+                isLoading={isProcessing}
+                disabled={
+                  isProcessing || Object.values(isValid).includes(false)
+                }>
                 <Text bold white transform="uppercase">
                   {t('common.signin')}
                 </Text>
@@ -181,7 +178,7 @@ const SignIn = () => {
                 shadow={!isAndroid}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
-                disabled={isLoading}
+                disabled={isProcessing}
                 onPress={() => navigation.replace('Register')}>
                 <Text bold primary transform="uppercase">
                   {t('common.signup')}
