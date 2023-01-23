@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SplashScreen from 'expo-splash-screen';
+import AppLoading from 'expo-app-loading';
 
 import {
   Categories,
@@ -24,6 +24,7 @@ export default () => {
   const {t} = useTranslation();
   const screenOptions = useScreenOptions();
   const [initialRoute, setInitalRoute] = React.useState('');
+  const [appIsReady, setAppIsReady] = React.useState(false);
 
   async function checkForUser() {
     const token = await AsyncStorage.getItem('@access-token').then((value) => {
@@ -52,9 +53,13 @@ export default () => {
           }
         })
         .finally(() => {
-          SplashScreen.hideAsync();
+          setAppIsReady(true);
         }))();
   }, []);
+
+  if (!appIsReady) {
+    return <AppLoading />;
+  }
 
   return (
     <Stack.Navigator

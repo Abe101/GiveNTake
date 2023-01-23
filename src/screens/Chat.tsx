@@ -175,7 +175,6 @@ const Chat = () => {
         text={newMessage}
         onInputTextChanged={setNewMessage}
         onSend={sendMessage}
-        isKeyboardInternallyHandled={false}
         scrollToBottom
         inverted={false}
       />

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet} from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   useIsDrawerOpen,
   createDrawerNavigator,
@@ -158,9 +158,9 @@ const DrawerContent = (
             row
             justify="flex-start"
             onPress={() => {
-              // AsyncStorage.removeItem('@access-token', () => {
-              // });
-              handleNavigation('SignIn');
+              AsyncStorage.removeItem('@access-token', () => {
+                handleNavigation('SignIn');
+              });
             }}>
             <Block
               flex={0}
