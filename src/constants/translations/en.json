@@ -137,7 +137,7 @@
     "newPassword": "New password"
   },
   "request": {
-    "formTitle": "Post a new request",
+    "formTitle": "Ask for something",
     "productName": "Product Name",
     "productBrand": "Product Company/Brand",
     "productQuantity": "Product Quantity",

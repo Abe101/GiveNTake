@@ -85,6 +85,15 @@ const Register = () => {
         }, 1000);
       } catch {
         setIsProcessing(false);
+        if (error === null) {
+          toaster.show('Something went wrong, please try again', {
+            type: 'danger',
+            placement: 'bottom',
+            duration: 3000,
+            animationType: 'slide-in',
+          });
+          return;
+        }
         /* @ts-ignore */
         toaster.show(error.response.data.message, {
           type: 'danger',

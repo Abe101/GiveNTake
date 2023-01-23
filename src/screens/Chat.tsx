@@ -2,8 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {GiftedChat, IMessage} from 'react-native-gifted-chat';
 import {Platform, KeyboardAvoidingView} from 'react-native';
 import {useQueries} from '@tanstack/react-query';
+import {Feather} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/core';
 
-import {Block, Text} from '../components';
+import {Block, Text, Button} from '../components';
 import {useChatStore} from '../store';
 import {
   createNewChatMessage,
@@ -19,7 +21,8 @@ import {useTheme} from '../hooks';
 
 const Chat = () => {
   const socket = io(BASE);
-  const {sizes} = useTheme();
+  const {sizes, colors} = useTheme();
+  const navigation = useNavigation();
 
   const {
     productTitle,
@@ -171,13 +174,28 @@ const Chat = () => {
   };
 
   return (
-    <Block>
-      <Text h5 bold center marginBottom={sizes.s}>
-        {senderQuery.data?.data.name}
-      </Text>
-      <Text h5 center>
-        {productTitle}
-      </Text>
+    <Block safe marginTop={sizes.md}>
+      <Block
+        flex={0}
+        row
+        justify="space-between"
+        align="center"
+        paddingHorizontal={sizes.m}
+        paddingTop={sizes.s}>
+        <Button
+          row
+          flex={0}
+          justify="flex-start"
+          onPress={() => navigation.goBack()}>
+          <Feather name="chevron-left" size={24} color={colors.text} />
+          <Text h5 bold>
+            {senderQuery.data?.data.name}
+          </Text>
+        </Button>
+        <Text h5 center>
+          {productTitle}
+        </Text>
+      </Block>
       <GiftedChat
         messages={olderMessages}
         user={{

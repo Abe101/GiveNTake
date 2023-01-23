@@ -202,17 +202,16 @@ const RequestForm = () => {
 
   return (
     <Block marginBottom={sizes.xxl}>
-      <Block justify="center" row>
-        <Text color={colors.text} h5>
-          {t('request.formTitle')}
-        </Text>
-      </Block>
+      <Text gradient={gradients.primary} h4>
+        {t('request.formTitle')}
+      </Text>
       <Block>
         <Input
           autoCapitalize="none"
           autoCorrect={false}
           marginTop={sizes.sm}
           color={colors.dark}
+          label={`${t('request.productName')}*`}
           placeholder={t('request.productName')}
           success={Boolean(formFields.prodName && isValid.prodName)}
           danger={Boolean(formFields.prodName && !isValid.prodName)}
@@ -226,6 +225,7 @@ const RequestForm = () => {
           autoCorrect={false}
           marginTop={sizes.sm}
           color={colors.dark}
+          label={`${t('request.productBrand')}*`}
           placeholder={t('request.productBrand')}
           success={Boolean(formFields.prodBrand && isValid.prodBrand)}
           danger={Boolean(formFields.prodBrand && !isValid.prodBrand)}
@@ -242,6 +242,7 @@ const RequestForm = () => {
           marginTop={sizes.sm}
           keyboardType="number-pad"
           color={colors.dark}
+          label={`${t('request.productQuantity')}*`}
           placeholder={t('request.productQuantity')}
           success={Boolean(formFields.prodQty && isValid.prodQty)}
           danger={Boolean(formFields.prodQty && !isValid.prodQty)}
@@ -262,6 +263,7 @@ const RequestForm = () => {
           marginTop={sizes.sm}
           color={colors.dark}
           multiline
+          label={`${t('request.description')}*`}
           placeholder={t('request.description')}
           success={Boolean(formFields.description && isValid.description)}
           danger={Boolean(formFields.description && !isValid.description)}
