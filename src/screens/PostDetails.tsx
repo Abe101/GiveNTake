@@ -1,8 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Platform} from 'react-native';
-import {useQueries} from '@tanstack/react-query';
+import {
+  ActivityIndicator,
+  Platform,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {useQueries, useMutation} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
+import {Feather} from '@expo/vector-icons';
+import {useToast} from 'react-native-toast-notifications';
 
 import {Block, Text, Image, Button} from '../components';
 import {useTheme, useTranslation} from '../hooks';
@@ -10,11 +17,13 @@ import {useChatStore, usePostStore} from '../store';
 import {getPostById, getUserProfile} from '../services';
 import {PostState} from '../store/usePostStore';
 import {IPost} from '../components/Forms/RequestForm';
+import deletePost from '../services/deletePost';
 
 const isAndroid = Platform.OS === 'android';
 
 const PostDetails = () => {
   const navigation = useNavigation();
+  const toast = useToast();
   const {t} = useTranslation();
   const {sizes, assets, colors, gradients} = useTheme();
   const [postId] = usePostStore((state: PostState) => [state.id]);
@@ -41,14 +50,27 @@ const PostDetails = () => {
     productImage: '',
     tags: [],
   });
-  const [userDetails, setUserDetails] = useState<any>({});
+  const [authorDetails, setAuthorDetails] = useState<any>({});
+  const [isAuthorCurrentUser, setIsAuthorCurrentUser] = useState(false);
+  const deletePostMutation = useMutation({
+    mutationKey: ['posts'],
+    mutationFn: deletePost,
+  });
 
   useEffect(() => {
     if (postQuery.isSuccess) {
       setPostDetails(postQuery.data.data.data.postDetails);
-      setUserDetails(postQuery.data.data.data.authorDetails);
+      setAuthorDetails(postQuery.data.data.data.authorDetails);
+
+      if (
+        postQuery.data.data.data.authorDetails._id === userQuery.data.data._id
+      ) {
+        setIsAuthorCurrentUser(true);
+      } else {
+        setIsAuthorCurrentUser(false);
+      }
     }
-  }, [postQuery]);
+  }, [postQuery, userQuery]);
 
   if (postQuery.isLoading) {
     return (
@@ -60,10 +82,48 @@ const PostDetails = () => {
 
   const onChatNow = async () => {
     setProductTitle(postDetails.productName);
-    setRecipientId(userDetails._id);
+    setRecipientId(authorDetails._id);
     setSenderId(userQuery.data.data._id);
 
     navigation.navigate('Chat');
+  };
+
+  const onDeletePost = async () => {
+    try {
+      await deletePostMutation.mutateAsync(postId);
+      toast.show('Request removed!', {
+        type: 'success',
+        placement: 'bottom',
+        duration: 2000,
+        animationType: 'slide-in',
+      });
+      navigation.goBack();
+    } catch {
+      /* @ts-ignore */
+      toast.show(deletePostMutation.error.response.data.message, {
+        type: 'danger',
+        placement: 'bottom',
+        duration: 2000,
+        animationType: 'slide-in',
+      });
+    }
+  };
+
+  const promptDeletePost = () => {
+    Alert.alert(
+      'Are you sure?',
+      'Are you sure you want to delete this request?',
+      [
+        {
+          text: 'Yes',
+          onPress: onDeletePost,
+          style: 'destructive',
+        },
+        {
+          text: 'No',
+        },
+      ],
+    );
   };
 
   return (
@@ -80,24 +140,35 @@ const PostDetails = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingBottom: sizes.padding}}>
           <Block flex={0} padding={sizes.s}>
-            <Button
-              row
-              flex={0}
-              justify="flex-start"
-              onPress={() => navigation.goBack()}>
-              <Image
-                radius={0}
-                /* @ts-ignore */
-                width={10}
-                height={18}
-                color={colors.text}
-                source={assets.arrow}
-                transform={[{rotate: '180deg'}]}
-              />
-              <Text h5 marginLeft={sizes.sm}>
-                {t('postDetails.title')}
-              </Text>
-            </Button>
+            <Block flex={0} row justify="space-between" align="center">
+              <Button
+                row
+                flex={0}
+                justify="flex-start"
+                onPress={() => navigation.goBack()}>
+                <Image
+                  radius={0}
+                  /* @ts-ignore */
+                  width={10}
+                  height={18}
+                  color={colors.text}
+                  source={assets.arrow}
+                  transform={[{rotate: '180deg'}]}
+                />
+                <Text h5 marginLeft={sizes.sm}>
+                  {t('postDetails.title')}
+                </Text>
+              </Button>
+              {isAuthorCurrentUser && (
+                <TouchableOpacity onPress={promptDeletePost}>
+                  <Feather
+                    name="trash-2"
+                    color={colors.danger}
+                    size={sizes.socialIconSize}
+                  />
+                </TouchableOpacity>
+              )}
+            </Block>
 
             <Image
               source={
@@ -180,24 +251,17 @@ const PostDetails = () => {
               <Block row justify="space-between" align="center">
                 <Block row align="center">
                   <Text p margin={sizes.s}>
-                    {
-                      /* @ts-ignore */
-                      userDetails?.name
-                    }
+                    {authorDetails?.name}
                   </Text>
-                  {
-                    /* @ts-ignore */
-                    userDetails?.avatar !== '' && (
-                      <Image
-                        /* @ts-ignore */
-                        source={{uri: userDetails?.avatar}}
-                        /* @ts-ignore */
-                        height={64}
-                        width={64}
-                        margin={sizes.s}
-                      />
-                    )
-                  }
+                  {authorDetails?.avatar !== '' && (
+                    <Image
+                      source={{uri: authorDetails?.avatar}}
+                      /* @ts-ignore */
+                      height={64}
+                      width={64}
+                      margin={sizes.s}
+                    />
+                  )}
                 </Block>
                 <Button
                   shadow={!isAndroid}
