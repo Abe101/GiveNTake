@@ -5,6 +5,7 @@ import {Chip} from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import {useToast} from 'react-native-toast-notifications';
 import {useQueries, useMutation} from '@tanstack/react-query';
+import mime from 'mime';
 
 import {Block, Text, Input, Button, Image, Modal} from '../../components';
 import {useTheme, useTranslation, useDisclose} from '../../hooks';
@@ -164,7 +165,7 @@ const RequestForm = () => {
       if (formFields.prodImg) {
         const uploadedImgData = await uploadToCloudinary({
           uri: formFields.prodImg.uri,
-          type: formFields.prodImg.type,
+          type: mime.getType(formFields.prodImg.uri),
           name: getFileName(formFields.prodImg.uri),
         });
 

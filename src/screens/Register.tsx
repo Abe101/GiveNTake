@@ -44,7 +44,7 @@ const Register = () => {
     confirmPassword: '',
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const {mutateAsync, data, error} = useMutation({
+  const {mutate, data, error} = useMutation({
     mutationKey: ['user'],
     mutationFn: register,
   });
@@ -67,7 +67,7 @@ const Register = () => {
       };
 
       try {
-        await mutateAsync(registerBody);
+        mutate(registerBody);
 
         await AsyncStorage.setItem(
           '@access-token',
@@ -94,7 +94,7 @@ const Register = () => {
         });
       }
     }
-  }, [data, error, isValid, mutateAsync, navigation, registration, toaster]);
+  }, [data, error, isValid, mutate, navigation, registration, toaster]);
 
   useEffect(() => {
     setIsValid((state) => ({

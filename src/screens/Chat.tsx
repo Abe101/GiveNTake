@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {GiftedChat, IMessage} from 'react-native-gifted-chat';
 import {Platform, KeyboardAvoidingView} from 'react-native';
-import {useQuery} from '@tanstack/react-query';
+import {useQueries} from '@tanstack/react-query';
 
 import {Block, Text} from '../components';
 import {useChatStore} from '../store';
@@ -14,10 +14,12 @@ import {
 } from '../constants/chatEvents';
 import {io} from 'socket.io-client';
 import {BASE} from '../constants/api';
-import {getUserProfile} from '../services';
+import {getUserById, getUserProfile} from '../services';
+import {useTheme} from '../hooks';
 
 const Chat = () => {
   const socket = io(BASE);
+  const {sizes} = useTheme();
 
   const {
     productTitle,
@@ -27,9 +29,17 @@ const Chat = () => {
     setRoomId,
   } = useChatStore();
 
-  const userQuery = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserProfile,
+  const [userQuery, senderQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['user'],
+        queryFn: getUserProfile,
+      },
+      {
+        queryKey: ['sender', senderId],
+        queryFn: () => getUserById(senderId),
+      },
+    ],
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -162,7 +172,10 @@ const Chat = () => {
 
   return (
     <Block>
-      <Text h5 bold center>
+      <Text h5 bold center marginBottom={sizes.s}>
+        {senderQuery.data?.data.name}
+      </Text>
+      <Text h5 center>
         {productTitle}
       </Text>
       <GiftedChat

@@ -4,6 +4,7 @@ import {TouchableOpacity} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {useMutation} from '@tanstack/react-query';
 import {useToast} from 'react-native-toast-notifications';
+import mime from 'mime';
 
 import {Block, Text, Button, Image, Input} from '../components';
 import {useTheme, useTranslation} from '../hooks/';
@@ -88,7 +89,7 @@ const ProfileSettings = () => {
     if (updateForm.avatar !== null) {
       const uploadedImgData = await uploadToCloudinary({
         uri: updateForm.avatar.uri,
-        type: updateForm.avatar.type,
+        type: mime.getType(updateForm.avatar.uri),
         name: getFileName(updateForm.avatar.uri),
       });
       console.log(uploadedImgData);

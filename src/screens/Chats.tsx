@@ -31,7 +31,7 @@ const Chats = () => {
         renderItem={({item: chat}) => {
           return (
             <ChatBox
-              recipientId={chat.recipient}
+              recipientId={chat.sender}
               lastMessage={chat.message}
               onPress={() => {
                 setRoomId(chat.roomId);
