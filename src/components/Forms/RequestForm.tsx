@@ -113,9 +113,9 @@ const RequestForm = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: false,
+      base64: true,
     });
 
     if (!result.cancelled) {
@@ -167,9 +167,10 @@ const RequestForm = () => {
           uri: formFields.prodImg.uri,
           type: mime.getType(formFields.prodImg.uri),
           name: getFileName(formFields.prodImg.uri),
+          base64: formFields.prodImg.base64,
         });
 
-        const uploadedImgUrl = uploadedImgData.secure_url;
+        const uploadedImgUrl = uploadedImgData?.secure_url;
         body.productImage = uploadedImgUrl;
       }
 
@@ -345,7 +346,7 @@ const RequestForm = () => {
               <Image
                 source={{uri: formFields.prodImg.uri}}
                 /* @ts-ignore */
-                height={formFields.prodImg.height / 12}
+                height={formFields.prodImg.height / 4}
                 width={sizes.width - sizes.xxl - 20}
                 marginTop={sizes.sm}
                 resizeMode="contain"

@@ -1,22 +1,21 @@
-import axios from 'axios';
-
 export default async function uploadToCloudinary(image: any) {
-  const formData = new FormData();
+  const body = {
+    file: `data:${image.type};base64,${image.base64}`,
+    upload_preset: 'bullstreak',
+  };
 
-  formData.append('file', image);
-  formData.append('upload_preset', 'bullstreak');
-  formData.append('cloud_name', 'larvae');
+  const apiUrl = 'https://api.cloudinary.com/v1_1/larvae/image/upload';
 
-  const request = await axios
-    .post('https://api.cloudinary.com/v1_1/larvae/upload', formData)
-    .then((res) => {
-      console.log('uploadImgRes', res);
-      return res.data;
-    })
-    .catch((error) => {
-      console.log('uploadImgError', error);
-      return error.response;
-    });
+  const request = await fetch(apiUrl, {
+    body: JSON.stringify(body),
+    headers: {
+      'content-type': 'application/json',
+    },
+    method: 'POST',
+  })
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((err) => err);
 
   return request;
 }

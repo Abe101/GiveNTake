@@ -52,9 +52,9 @@ const ProfileSettings = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: false,
+      base64: true,
     });
 
     if (!result.cancelled) {
@@ -91,8 +91,8 @@ const ProfileSettings = () => {
         uri: updateForm.avatar.uri,
         type: mime.getType(updateForm.avatar.uri),
         name: getFileName(updateForm.avatar.uri),
+        base64: updateForm.avatar.base64,
       });
-      console.log(uploadedImgData);
 
       const uploadedImgUrl = uploadedImgData?.secure_url;
       body.avatar = uploadedImgUrl;

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "GT",
+    "name": "Give N Take",
     "slug": "giventake",
     "owner": "artie",
     "description": "GT - Give'n'Take",
@@ -17,6 +17,7 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+    "userInterfaceStyle": "light",
     "plugins": [
       [
         "expo-image-picker",
