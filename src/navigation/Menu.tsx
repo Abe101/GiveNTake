@@ -8,10 +8,12 @@ import {
   DrawerContentOptions,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
+import {useQuery} from '@tanstack/react-query';
 
 import Screens from './Screens';
 import {Block, Text, Button, Image} from '../components';
 import {useTheme, useTranslation} from '../hooks';
+import {getUserProfile} from '../services';
 
 const Drawer = createDrawerNavigator();
 
@@ -69,8 +71,25 @@ const DrawerContent = (
   const {t} = useTranslation();
   // const {isDark, handleIsDark} = useData();
   const [active, setActive] = useState('');
+  const [status, setStatus] = useState('');
   const {assets, colors, gradients, sizes} = useTheme();
   const labelColor = colors.text;
+  const userQuery = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserProfile,
+  });
+
+  useEffect(() => {
+    const today = new Date();
+    const hours = today.getHours();
+    const statusNow =
+      hours < 12
+        ? t('common.greetings.morning')
+        : hours <= 18 && hours >= 12
+        ? t('common.greetings.afternoon')
+        : t('common.greetings.evening');
+    setStatus(statusNow);
+  }, [t]);
 
   const handleNavigation = useCallback(
     (to) => {
@@ -110,11 +129,11 @@ const DrawerContent = (
             resizeMode="contain"
           />
           <Block>
-            <Text size={12} semibold>
-              {t('app.name')}
+            <Text size={12} semibold transform="capitalize">
+              {status}
             </Text>
             <Text size={12} semibold>
-              {t('app.fullname')}
+              {userQuery.data?.data.name}
             </Text>
           </Block>
         </Block>

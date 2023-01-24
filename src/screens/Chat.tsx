@@ -21,7 +21,7 @@ import {useTheme} from '../hooks';
 
 const Chat = () => {
   const socket = io(BASE);
-  const {sizes, colors} = useTheme();
+  const {sizes, colors, gradients} = useTheme();
   const navigation = useNavigation();
 
   const {
@@ -181,7 +181,8 @@ const Chat = () => {
         justify="space-between"
         align="center"
         paddingHorizontal={sizes.m}
-        paddingTop={sizes.s}>
+        paddingTop={sizes.s}
+        gradient={gradients.light}>
         <Button
           row
           flex={0}

@@ -58,6 +58,11 @@
       "one": "1 guest",
       "other": "{{count}} guests",
       "zero": "0 Guests"
+    },
+    "greetings": {
+      "morning": "Good morning 👋🏻",
+      "afternoon": "Good afternoon 👋🏻",
+      "evening": "Good evening 👋🏻"
     }
   },
   "app": {

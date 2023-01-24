@@ -62,12 +62,15 @@ const PostDetails = () => {
       setPostDetails(postQuery.data.data.data.postDetails);
       setAuthorDetails(postQuery.data.data.data.authorDetails);
 
-      if (
-        postQuery.data.data.data.authorDetails._id === userQuery.data.data._id
-      ) {
-        setIsAuthorCurrentUser(true);
-      } else {
-        setIsAuthorCurrentUser(false);
+      if (userQuery.isSuccess) {
+        if (
+          postQuery.data.data.data.authorDetails._id ===
+          userQuery.data?.data?._id
+        ) {
+          setIsAuthorCurrentUser(true);
+        } else {
+          setIsAuthorCurrentUser(false);
+        }
       }
     }
   }, [postQuery, userQuery]);
@@ -83,7 +86,7 @@ const PostDetails = () => {
   const onChatNow = async () => {
     setProductTitle(postDetails.productName);
     setRecipientId(authorDetails._id);
-    setSenderId(userQuery.data.data._id);
+    setSenderId(userQuery.data?.data?._id);
 
     navigation.navigate('Chat');
   };
@@ -263,22 +266,24 @@ const PostDetails = () => {
                     />
                   )}
                 </Block>
-                <Button
-                  shadow={!isAndroid}
-                  flex={0}
-                  outlined
-                  primary
-                  paddingHorizontal={sizes.sm}>
-                  <Text
-                    p
-                    bold
-                    margin={sizes.s}
-                    transform="uppercase"
-                    color={colors.primary}
-                    onPress={onChatNow}>
-                    {t('postDetails.chatNow')}
-                  </Text>
-                </Button>
+                {!isAuthorCurrentUser && (
+                  <Button
+                    shadow={!isAndroid}
+                    flex={0}
+                    outlined
+                    primary
+                    paddingHorizontal={sizes.sm}>
+                    <Text
+                      p
+                      bold
+                      margin={sizes.s}
+                      transform="uppercase"
+                      color={colors.primary}
+                      onPress={onChatNow}>
+                      {t('postDetails.chatNow')}
+                    </Text>
+                  </Button>
+                )}
               </Block>
             </Block>
           </Block>
